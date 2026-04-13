@@ -800,7 +800,7 @@ function copyLink(btn) {
 // 이미지 저장 (결과 카드 캡처)
 function saveImage() {
   if (!currentType) return;
-  const target = document.getElementById('screenResult');
+  const target = document.querySelector('#screenResult .result-hero');
   html2canvas(target, {
     useCORS: true,
     backgroundColor: '#fff5f7',
