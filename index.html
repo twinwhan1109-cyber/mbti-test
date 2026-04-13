@@ -32,11 +32,16 @@
     .screen.active {
       display: flex;
       flex-direction: column;
-      animation: fadeUp 0.35s ease;
+      animation: screenEnter 0.55s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(14px); }
-      to   { opacity: 1; transform: translateY(0); }
+    @keyframes screenEnter {
+      0%   { opacity: 0; transform: scale(0.86) translateY(48px); }
+      60%  { opacity: 1; transform: scale(1.03) translateY(-6px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    @keyframes screenExit {
+      0%   { opacity: 1; transform: scale(1) translateY(0); }
+      100% { opacity: 0; transform: scale(0.9) translateY(-30px); }
     }
 
     /* ── START ── */
@@ -284,27 +289,35 @@
       margin-bottom: 18px;
     }
     .dig-logo {
-      height: 28px;
+      height: 52px;
       width: auto;
-      opacity: 0.75;
+      opacity: 0.85;
     }
 
     /* ── 질문 전환 애니메이션 ── */
     @keyframes qSlideInRight {
-      from { opacity: 0; transform: translateX(36px); }
-      to   { opacity: 1; transform: translateX(0); }
+      0%   { opacity: 0; transform: translateX(70px) scale(0.93); }
+      65%  { transform: translateX(-10px) scale(1.03); }
+      100% { opacity: 1; transform: translateX(0) scale(1); }
     }
     @keyframes qSlideOutLeft {
-      from { opacity: 1; transform: translateX(0); }
-      to   { opacity: 0; transform: translateX(-36px); }
+      0%   { opacity: 1; transform: translateX(0) scale(1); }
+      100% { opacity: 0; transform: translateX(-70px) scale(0.9); }
     }
     @keyframes qSlideInLeft {
-      from { opacity: 0; transform: translateX(-36px); }
-      to   { opacity: 1; transform: translateX(0); }
+      0%   { opacity: 0; transform: translateX(-70px) scale(0.93); }
+      65%  { transform: translateX(10px) scale(1.03); }
+      100% { opacity: 1; transform: translateX(0) scale(1); }
     }
     @keyframes qSlideOutRight {
-      from { opacity: 1; transform: translateX(0); }
-      to   { opacity: 0; transform: translateX(36px); }
+      0%   { opacity: 1; transform: translateX(0) scale(1); }
+      100% { opacity: 0; transform: translateX(70px) scale(0.9); }
+    }
+    /* 선택된 답변 버튼 flash */
+    @keyframes optPick {
+      0%   { transform: scale(1); }
+      40%  { transform: scale(0.95); background: linear-gradient(135deg,#d4607c,#e8849a); color: #fff; }
+      100% { transform: scale(0.95); }
     }
     #qContent { will-change: transform, opacity; }
 
@@ -725,48 +738,53 @@ function render() {
   document.getElementById('qNum').textContent          = `Q${cur + 1}`;
   document.getElementById('qText').textContent         = q.text;
   document.getElementById('options').innerHTML = `
-    <button class="opt-btn" onclick="pick('${q.va}')">
+    <button class="opt-btn" onclick="pick('${q.va}', this)">
       <span class="opt-letter">A</span><span>${q.a}</span>
     </button>
-    <button class="opt-btn" onclick="pick('${q.vb}')">
+    <button class="opt-btn" onclick="pick('${q.vb}', this)">
       <span class="opt-letter">B</span><span>${q.b}</span>
     </button>`;
 }
 
-function pick(v) {
+function pick(v, btnEl) {
   const content = document.getElementById('qContent');
-  // 버튼 즉시 비활성화 (중복 클릭 방지)
   content.querySelectorAll('.opt-btn').forEach(b => b.disabled = true);
-  content.style.animation = 'qSlideOutLeft 0.22s ease-in forwards';
+
+  // 선택한 버튼 flash 효과
+  if (btnEl) btnEl.style.animation = 'optPick 0.18s ease forwards';
 
   setTimeout(() => {
-    sc[v]++;
-    answers.push(v);
-    cur++;
-    if (cur >= Q.length) {
-      showResult();
-    } else {
-      render();
-      content.style.animation = 'qSlideInRight 0.32s cubic-bezier(0.16,1,0.3,1) forwards';
-      setTimeout(() => { content.style.animation = ''; }, 320);
-    }
-  }, 220);
+    content.style.animation = 'qSlideOutLeft 0.2s cubic-bezier(0.55,0,1,0.45) forwards';
+
+    setTimeout(() => {
+      sc[v]++;
+      answers.push(v);
+      cur++;
+      if (cur >= Q.length) {
+        showResult();
+      } else {
+        render();
+        content.style.animation = 'qSlideInRight 0.45s cubic-bezier(0.16,1,0.3,1) forwards';
+        setTimeout(() => { content.style.animation = ''; }, 450);
+      }
+    }, 200);
+  }, 100);
 }
 
 function goBack() {
   if (cur === 0) return;
   const content = document.getElementById('qContent');
   content.querySelectorAll('.opt-btn').forEach(b => b.disabled = true);
-  content.style.animation = 'qSlideOutRight 0.22s ease-in forwards';
+  content.style.animation = 'qSlideOutRight 0.2s cubic-bezier(0.55,0,1,0.45) forwards';
 
   setTimeout(() => {
     cur--;
     const prev = answers.pop();
     sc[prev]--;
     render();
-    content.style.animation = 'qSlideInLeft 0.32s cubic-bezier(0.16,1,0.3,1) forwards';
-    setTimeout(() => { content.style.animation = ''; }, 320);
-  }, 220);
+    content.style.animation = 'qSlideInLeft 0.45s cubic-bezier(0.16,1,0.3,1) forwards';
+    setTimeout(() => { content.style.animation = ''; }, 450);
+  }, 200);
 }
 
 function saveResult(type) {
@@ -909,9 +927,21 @@ function saveImage() {
 }
 
 function show(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  window.scrollTo(0, 0);
+  const current = document.querySelector('.screen.active');
+  const next = document.getElementById(id);
+  if (current && current !== next) {
+    current.style.animation = 'screenExit 0.22s ease-in forwards';
+    setTimeout(() => {
+      current.style.animation = '';
+      current.classList.remove('active');
+      next.classList.add('active');
+      window.scrollTo(0, 0);
+    }, 220);
+  } else {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    next.classList.add('active');
+    window.scrollTo(0, 0);
+  }
 }
 </script>
 </body>
