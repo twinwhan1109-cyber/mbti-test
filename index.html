@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>경제 MBTI 테스트</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Apple SD Gothic Neo', sans-serif;
+      background: #f4f6ff;
+      min-height: 100vh;
+      color: #1a1a2e;
+    }
+
+    .container {
+      max-width: 560px;
+      margin: 0 auto;
+      padding: 24px 16px 48px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .screen { display: none; }
+    .screen.active {
+      display: flex;
+      flex-direction: column;
+      animation: fadeUp 0.35s ease;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── START ── */
+    .start-card {
+      background: #fff;
+      border-radius: 28px;
+      padding: 52px 32px 44px;
+      text-align: center;
+      box-shadow: 0 8px 40px rgba(80, 100, 220, 0.10);
+    }
+    .start-icon { font-size: 68px; margin-bottom: 18px; line-height: 1; }
+    .start-card h1 {
+      font-size: 26px;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      margin-bottom: 10px;
+    }
+    .start-card p {
+      font-size: 15px;
+      color: #666;
+      line-height: 1.7;
+      margin-bottom: 28px;
+    }
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 36px;
+    }
+    .chip {
+      background: #eef1ff;
+      color: #5164dc;
+      border-radius: 20px;
+      padding: 6px 14px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .btn-primary {
+      width: 100%;
+      padding: 18px;
+      background: linear-gradient(135deg, #5164dc 0%, #8B5CF6 100%);
+      color: #fff;
+      border: none;
+      border-radius: 16px;
+      font-size: 17px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 6px 24px rgba(81, 100, 220, 0.38);
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .btn-primary:hover  { transform: translateY(-2px); box-shadow: 0 10px 32px rgba(81,100,220,.45); }
+    .btn-primary:active { transform: translateY(0); }
+
+    /* ── QUIZ ── */
+    .quiz-header { margin-bottom: 20px; }
+    .progress-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .progress-num { font-size: 13px; color: #888; font-weight: 600; }
+    .btn-back {
+      background: none;
+      border: none;
+      color: #888;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: color 0.15s;
+    }
+    .btn-back:hover { color: #5164dc; }
+    .btn-back:disabled { opacity: 0; pointer-events: none; }
+    .dim-chip {
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 11px;
+      background: #eef1ff;
+      color: #5164dc;
+      border-radius: 20px;
+    }
+    .progress-track {
+      background: #e2e6ff;
+      border-radius: 8px;
+      height: 8px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #5164dc, #8B5CF6);
+      border-radius: 8px;
+      transition: width 0.4s ease;
+    }
+    .q-card {
+      background: #fff;
+      border-radius: 24px;
+      padding: 32px 28px 28px;
+      box-shadow: 0 6px 28px rgba(80,100,220,.09);
+      margin-bottom: 14px;
+    }
+    .q-num {
+      font-size: 12px;
+      font-weight: 700;
+      color: #5164dc;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .q-text {
+      font-size: 19px;
+      font-weight: 700;
+      line-height: 1.55;
+    }
+    .options { display: flex; flex-direction: column; gap: 12px; }
+    .opt-btn {
+      width: 100%;
+      padding: 18px 20px;
+      background: #fff;
+      border: 2px solid #e4e8ff;
+      border-radius: 16px;
+      font-size: 15px;
+      font-weight: 500;
+      color: #1a1a2e;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      line-height: 1.55;
+      transition: border-color 0.15s, background 0.15s, transform 0.15s, box-shadow 0.15s;
+    }
+    .opt-btn:hover {
+      border-color: #5164dc;
+      background: #f7f8ff;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(81,100,220,.13);
+    }
+    .opt-btn:active { transform: translateY(0); }
+    .opt-letter {
+      min-width: 28px; height: 28px;
+      background: #eef1ff; color: #5164dc;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 13px;
+      flex-shrink: 0; margin-top: 1px;
+    }
+
+    /* ── RESULT ── */
+    .result-screen { padding-bottom: 20px; }
+    .result-hero {
+      background: #fff;
+      border-radius: 28px;
+      padding: 44px 28px 36px;
+      text-align: center;
+      box-shadow: 0 8px 40px rgba(80,100,220,.10);
+      margin-bottom: 14px;
+    }
+    .result-emoji-big { font-size: 60px; margin-bottom: 14px; line-height: 1; }
+    .result-type-txt {
+      font-size: 52px;
+      font-weight: 900;
+      background: linear-gradient(135deg, #5164dc, #8B5CF6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 6px;
+      letter-spacing: 2px;
+    }
+    .result-title-txt {
+      font-size: 20px;
+      font-weight: 800;
+      color: #1a1a2e;
+      margin-bottom: 14px;
+    }
+    .result-chips {
+      display: flex; flex-wrap: wrap; gap: 8px;
+      justify-content: center; margin-bottom: 16px;
+    }
+    .result-chip {
+      background: #eef1ff; color: #5164dc;
+      border-radius: 20px; padding: 6px 14px;
+      font-size: 13px; font-weight: 600;
+    }
+    .result-quote {
+      font-size: 14px; color: #666;
+      line-height: 1.7; font-style: italic;
+    }
+    .info-card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 26px 24px;
+      box-shadow: 0 4px 18px rgba(80,100,220,.07);
+      margin-bottom: 12px;
+    }
+    .info-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #5164dc;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .info-title::before {
+      content: '';
+      width: 4px; height: 15px;
+      background: linear-gradient(180deg, #5164dc, #8B5CF6);
+      border-radius: 2px;
+    }
+    .info-body { font-size: 15px; color: #333; line-height: 1.85; }
+    .stock-name {
+      display: inline-block;
+      background: linear-gradient(135deg, #5164dc, #8B5CF6);
+      color: #fff;
+      border-radius: 10px;
+      padding: 4px 12px;
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .btn-retry {
+      width: 100%;
+      padding: 18px;
+      background: linear-gradient(135deg, #5164dc 0%, #8B5CF6 100%);
+      color: #fff;
+      border: none;
+      border-radius: 16px;
+      font-size: 17px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 6px 24px rgba(81,100,220,.38);
+      transition: transform 0.15s, box-shadow 0.15s;
+      margin-top: 4px;
+    }
+    .btn-retry:hover  { transform: translateY(-2px); box-shadow: 0 10px 32px rgba(81,100,220,.45); }
+    .btn-retry:active { transform: translateY(0); }
+
+    @media (max-width: 480px) {
+      .container { padding: 20px 12px 40px; }
+      .start-card { padding: 40px 20px 36px; }
+      .start-card h1 { font-size: 23px; }
+      .q-card { padding: 26px 20px 22px; }
+      .q-text { font-size: 17px; }
+      .opt-btn { padding: 16px 16px; font-size: 14px; }
+      .result-type-txt { font-size: 44px; }
+      .result-hero { padding: 36px 20px 30px; }
+      .info-card { padding: 22px 18px; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <!-- ══════ START ══════ -->
+  <div id="screenStart" class="screen active">
+    <div class="start-card">
+      <div class="start-icon">💰</div>
+      <h1>나의 경제 MBTI는?</h1>
+      <p>13개의 질문으로 알아보는<br>나만의 소비·투자 유형 테스트</p>
+      <div class="chip-row">
+        <span class="chip">💸 소비 성향</span>
+        <span class="chip">📈 투자 유형</span>
+        <span class="chip">🇺🇸 추천 미국 주식</span>
+      </div>
+      <button class="btn-primary" onclick="startQuiz()">테스트 시작하기 →</button>
+    </div>
+  </div>
+
+  <!-- ══════ QUIZ ══════ -->
+  <div id="screenQuiz" class="screen">
+    <div class="quiz-header">
+      <div class="progress-row">
+        <button class="btn-back" id="btnBack" onclick="goBack()" disabled>← 이전</button>
+        <span class="progress-num" id="progressNum">1 / 13</span>
+        <span class="dim-chip" id="dimChip">I vs E</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progressFill" style="width:0%"></div>
+      </div>
+    </div>
+    <div class="q-card">
+      <div class="q-num" id="qNum">Q1</div>
+      <div class="q-text" id="qText"></div>
+    </div>
+    <div class="options" id="options"></div>
+  </div>
+
+  <!-- ══════ RESULT ══════ -->
+  <div id="screenResult" class="screen result-screen">
+    <div class="result-hero">
+      <div class="result-emoji-big" id="rEmoji"></div>
+      <div class="result-type-txt" id="rType"></div>
+      <div class="result-title-txt" id="rTitle"></div>
+      <div class="result-chips" id="rChips"></div>
+      <div class="result-quote" id="rQuote"></div>
+    </div>
+    <div class="info-card">
+      <div class="info-title">나의 소비 성향</div>
+      <div class="info-body" id="rConsume"></div>
+    </div>
+    <div class="info-card">
+      <div class="info-title">나의 투자 성향</div>
+      <div class="info-body" id="rInvest"></div>
+    </div>
+    <div class="info-card">
+      <div class="info-title">나와 잘 맞는 미국 주식</div>
+      <div class="info-body" id="rStock"></div>
+    </div>
+    <button class="btn-retry" onclick="restartQuiz()">다시 테스트하기 🔄</button>
+  </div>
+
+</div>
+
+<script>
+const Q = [
+  // ── I / E (4문항) ──────────────────────────────────
+  { dim:'I/E', label:'I vs E',
+    text:'오늘은 월급날이다',
+    a:'오늘은 내가 쏜다! 친구들아 다 모여!',
+    b:'집 가서 조용히 나를 위한 소소한 플렉스',
+    va:'E', vb:'I' },
+  { dim:'I/E', label:'I vs E',
+    text:'스트레스가 만땅이다. 나는 스트레스 해소 비용을 주로 어떻게 쓸까?',
+    a:'내 얘기 들어줄 사람ㅠㅠ 친구들과 약속을 잡는다',
+    b:'저 오늘 선약이.. 나와의 약속을 잡는다',
+    va:'E', vb:'I' },
+  { dim:'I/E', label:'I vs E',
+    text:'돈 관리를 해야할 것 같다',
+    a:'추천, 후기, 다른 사람의 방식을 잘 찾아보고 따라한다',
+    b:'나는 나만의 길을 간다. 내 방식을 만들어서 관리한다',
+    va:'E', vb:'I' },
+  { dim:'I/E', label:'I vs E',
+    text:'본격적으로 재테크 공부를 시작해보려 한다',
+    a:'재테크 스터디나 모임에 참여해서 함께 공부하고 싶다',
+    b:'조용히 경제 유튜브나 책을 읽으며 차근차근 공부하는 게 편하다',
+    va:'E', vb:'I' },
+  // ── N / S (3문항) ──────────────────────────────────
+  { dim:'N/S', label:'N vs S',
+    text:'새로운 주식 종목을 사기로 했다',
+    a:'숫자는 거짓말을 하지 않지. 실적을 확인하고 우량주를 산다.',
+    b:'보인다. 성장 가능성이 보인다. 미래를 상상하며 성장주를 산다.',
+    va:'S', vb:'N' },
+  { dim:'N/S', label:'N vs S',
+    text:'새로운 재테크 방법을 알게 됐다',
+    a:'수익률, 원금 손실 위험 등 구체적인 수치부터 꼼꼼하게 따져본다',
+    b:'앞으로 이 시장이 얼마나 더 커질지 큰 그림부터 그려본다',
+    va:'S', vb:'N' },
+  { dim:'N/S', label:'N vs S',
+    text:'보유 중인 주식이 갑자기 폭락했다',
+    a:'"이유가 뭐지?" 전문가들의 분석 기사를 찾아보며 현 상황을 파악한다',
+    b:'"위기는 기회다!" 나의 직감을 믿고 물타기(추가 매수) 타이밍을 노린다',
+    va:'S', vb:'N' },
+  // ── F / T (3문항) ──────────────────────────────────
+  { dim:'F/T', label:'F vs T',
+    text:'오늘 진짜 열받는 일이 있었다.',
+    a:'장바구니 털어! 나를 위한 쇼핑으로 스트레스를 풀어본다.',
+    b:'화는 나지만… 충동적인 지출은 자제한다.',
+    va:'F', vb:'T' },
+  { dim:'F/T', label:'F vs T',
+    text:'친구가 돈을 빌려달라고 했다.',
+    a:'사정을 들으니 거절이 어렵다… 일단 빌려준다.',
+    b:'아무리 친해도 돈 거래는 확실해야지. 상황 보고 판단한다.',
+    va:'F', vb:'T' },
+  { dim:'F/T', label:'F vs T',
+    text:'경제 뉴스레터를 보고 있다. 내가 더 좋아하는 포인트는?',
+    a:'에디터의 공감과 재치 있는 말투에 마음이 따뜻해진다.',
+    b:'팩트체크와 통계 자료! 근거가 탄탄해 신뢰도가 올라간다.',
+    va:'F', vb:'T' },
+  // ── P / J (3문항) ──────────────────────────────────
+  { dim:'P/J', label:'P vs J',
+    text:'가벼운 마음으로 쇼핑을 하러 갔다.',
+    a:'헉! 넌 나랑 같이 집에 가자. 바로 카드를 긁는다.',
+    b:'이미 준비해둔 쇼핑리스트가 있다. 그것만 산다.',
+    va:'P', vb:'J' },
+  { dim:'P/J', label:'P vs J',
+    text:'카드값 나오는 날이다.',
+    a:'"통장 해킹 당했나?" 내역을 보며 과거의 나를 원망한다.',
+    b:'예상했던 금액이라 크게 놀랍지 않다.',
+    va:'P', vb:'J' },
+  { dim:'P/J', label:'P vs J',
+    text:'넷플릭스를 안 본지 한 달째.',
+    a:'언젠간 재밌는 거 올라오겠지.. 일단 구독 유지!',
+    b:'한 달이나 안봤어? 칼같이 구독 해지한다.',
+    va:'P', vb:'J' },
+];
+
+const RESULTS = {
+  ESTJ: { emoji:'📊', title:'지출 컷! 가성비 광인',
+    tags:['#가성비','#지출통제','#철벽방어'],
+    quote:'"감성에 휘둘리는 가심비? 내 사전에 오직 압도적 가성비만 존재할 뿐"',
+    consume:'감성에 휘둘리는 가심비? 제 사전엔 압도적인 가성비와 엑셀로 정리된 예산안뿐입니다. 계획에 없던 지출은 절대 용납하지 않으며 구매 전 리뷰 분석과 스펙 비교를 통해 가장 합리적인 선택을 내리는 냉철한 지출 관리자예요.',
+    invest:'투자도 철저한 계획과 원칙 아래에서 돌아가야 합니다. 직감이나 소문에 의존하는 묻지마 투자는 절대 금물! 꼼꼼한 수익률 분석, 환율과 금리 체크, 철저한 포트폴리오 분산으로 리스크를 철벽 방어하며 자산을 증식시키는 냉철한 원칙주의자예요.',
+    stockName:'월마트 (WMT)', stockDesc:'압도적인 효율과 원가 절감의 끝판왕! 철저한 시스템으로 유통 생태계를 장악하며 \'가성비\'의 승리를 매일 증명해 내는 우량주가 원칙주의자인 당신과 딱 맞아요.' },
+
+  ESTP: { emoji:'🚀', title:'빠꾸 없는 매수 버튼',
+    tags:['#실행력','#플렉스','#승부사'],
+    quote:'"고민은 배송만 늦출 뿐! 일단 긁고 보는 확실한 실행력"',
+    consume:'고민은 배송만 늦출 뿐 일단 사고 생각한다! 남들이 후기 읽고 검증할 때 이미 \'결제 완료\' 문자를 받고 있을 타입이에요. 유행하는 건 누구보다 빨리 써봐야 하고 꽂히는 게 생기면 앞뒤 안 재고 카드를 긁는 화끈한 실행력의 소유자입니다.',
+    invest:'시장의 흐름을 보며 머리 싸매고 고민하기보단 "오 지금 느낌 왔어!" 싶으면 주저 없이 과감하게 베팅합니다. 트렌드 변화에 누구보다 빠르게 행동하며 단기 수익을 시원하게 뽑아내는 타고난 야생의 승부사예요.',
+    stockName:'나스닥 3배 레버리지 ETF (TQQQ)', stockDesc:'꽂히면 일단 지르고 보는 야생의 심장! 횡보장에서는 하품만 나오는 당신에게 나스닥 지수를 3배로 추종하는 화끈한 아드레날린을 선사합니다.' },
+
+  ESFJ: { emoji:'🌟', title:'발빠른 핫템 수집가',
+    tags:['#핫템수집','#인맥왕','#정보통'],
+    quote:'"핫템은 다 내 거야! 알짜배기 할인 정보와 인맥으로 똘똘 뭉친 정보통"',
+    consume:'사람 만나는 걸 너무 좋아해서 모임 회비와 밥값 지출이 1순위! 요즘 유행하는 핫템은 나도 꼭 있어야 마음이 편안해집니다. 주변 지인들이 알려주는 할인 혜택과 꿀템 정보를 누구보다 빠르게 수집해 알차게 소비해요.',
+    invest:'넓은 인맥이 곧 나의 든든한 투자 정보력! 혼자 끙끙대며 차트 공부를 하기보다는 주변 지인들이나 투자 모임에서 얻은 고급 찌라시와 알짜 소스를 빠르게 흡수합니다. 대중의 관심이 쏠리는 핫한 종목을 재빠르게 눈치채고 탑승하는 정보전의 승리자예요.',
+    stockName:'코스트코 (COST)', stockDesc:'오프라인 모임과 핫템을 사랑하는 정보통! 충성도 높은 멤버십 고객들로 붐비는 유통 공룡 주식을 눈여겨보세요.' },
+
+  ESFP: { emoji:'🎉', title:'월급 순삭 플렉스 대장',
+    tags:['#탕진각','#파워인싸','#플렉스'],
+    quote:'"돈 걱정은 미래의 내가 하겠지! 지금 이 순간을 200% 즐기는 파워 인싸"',
+    consume:'"돈 걱정은 미래의 내가 하겠지!" 페스티벌, 핫플 투어 등 지금 이 순간을 200% 즐기는 데 돈을 쓰는 파워 인싸입니다. 가장 빛나는 짜릿한 순간을 위해 아낌없이 카드를 긁는 폼생폼사 소비러예요.',
+    invest:'10년 뒤에 부자 되기? 너무 지루해서 못 기다려요! 바로바로 매수·매도 체결 알림이 울리고 파란불, 빨간불이 깜빡이는 걸 확인해야 직성이 풀립니다. 자산 시장의 다이내믹한 파도를 서핑하듯 즐기며 즉각적인 결과가 나오는 액티브한 재테크를 좋아해요.',
+    stockName:'라이브네이션 (LYV)', stockDesc:'페스티벌과 핫플 투어를 사랑하며 지금 이 순간을 최대로 즐기려고 해요. 전 세계의 가장 짜릿한 공연과 축제를 책임지는 글로벌 엔터테인먼트 주식이 찰떡이에요.' },
+
+  ENTJ: { emoji:'💼', title:'야망 가득 머니 컬렉터',
+    tags:['#효율주의','#야심가','#공격투자'],
+    quote:'"내 시간을 아껴주고 효율을 높여준다면 망설임 없이 결제 완료!"',
+    consume:'내 시간을 아껴주거나 커리어를 레벨업 시켜주는 아이템에는 망설임 없이 카드를 긁습니다. 비용 대비 내 성장에 얼마나 도움이 되는지 따지는 \'효율\'이 지출의 1순위 기준이에요. 돈으로 시간을 살 수 있다면 기꺼이 지불합니다.',
+    invest:'자산 증식도 하나의 거대한 비즈니스 프로젝트! 확실한 목표 수익률을 정해두고, 수익을 낸 뒤 다른 곳에 투자할 계획까지 철저히 세웁니다. 결정이 서면 뒤도 돌아보지 않고 불도저처럼 공격적인 투자를 밀어붙여 통장 앞자리를 바꿔버리는 야심가예요.',
+    stockName:'나스닥 100 ETF (QQQ)', stockDesc:'자산 증식도 효율이 생명인 불도저 야심가! 미국의 가장 잘나가는 혁신 기술 기업 100개에 한 번에 투자하며 부의 추월차선을 밟아보세요.' },
+
+  ENTP: { emoji:'⚡', title:'호기심 많은 투자 실험가',
+    tags:['#기분파','#역발상','#하이리스크'],
+    quote:'"뻔한 건 죽어도 싫어! 하이리스크 하이리턴을 즐기는 역발상 투자"',
+    consume:'남들 다 사는 뻔한 아이템은 거부한다! 내 개성을 확실히 살려주는 독특하고 키치한 아이템을 발굴하는 데 돈을 씁니다. 가끔은 \'이걸 왜 샀지?\' 싶은 물건에도 호기심 하나로 시원하게 지갑을 여는 기분파 소비 유형을 가지고 있어요.',
+    invest:'"위험해야 수익도 크지!" 남들 다 사는 우량주에는 별 흥미를 못 느낍니다. 변동성이 심한 장세에서도 특유의 배짱으로 하이리스크 하이리턴을 노리며, 남들이 다 팔고 도망갈 때 오히려 줍줍하는 짜릿한 역발상 투자를 즐깁니다.',
+    stockName:'테슬라 (TSLA)', stockDesc:'뻔한 건 재미없고 리스크를 즐기는 승부사! 하루가 다르게 널뛰는 주가 속에서도 혁신이라는 키워드 하나로 롤러코스터를 타는 짜릿함이 필요해요.' },
+
+  ENFJ: { emoji:'🤝', title:'열정적인 인간 적십자',
+    tags:['#선물요정','#정보공유','#오지라퍼'],
+    quote:'"내 통장은 비어가도 네가 웃으면 난 좋아... 지인 한정 인간 적십자"',
+    consume:'내 것보다는 가족, 친구, 연인 생일 챙기는 데 돈을 더 많이 쓰는 훈훈한 지갑의 소유자입니다. 좋은 걸 발견하면 주변 사람들에게 선물하고 함께 나누는 기쁨이 소비의 가장 큰 원동력으로 따뜻한 지출의 아이콘이에요.',
+    invest:'"이 좋은 주식을 나만 알 수 없지!" 유망한 산업 분야나 알짜배기 투자 정보를 발견하면 혼자 꿀 빨지 않고 주변 사람들에게 적극적으로 공유합니다. 다 같이 투자 스터디도 하고 서로 으쌰으쌰 격려하며 함께 경제적 자유를 누리고 싶어 해요.',
+    stockName:'메타 (META)', stockDesc:'사람을 연결하는 데서 가장 큰 기쁨을 느끼는 오지라퍼! 전 세계 수십억 명의 인맥과 일상을 이어주는 글로벌 소셜 네트워크 플랫폼 주식이 찰떡이에요.' },
+
+  ENFP: { emoji:'✨', title:'느낌 위주 풀매수러',
+    tags:['#경험주의','#직관투자','#풀매수'],
+    quote:'"어머 이건 사야 해! 꽂히면 고민 없이 일단 지르고 보는 폼생폼사"',
+    consume:'핫플은 내가 제일 먼저 가봐야 직성이 풀려요! 소유하는 물건보다는 여행, 전시 등 새롭고 짜릿한 경험을 사는 데 돈을 아끼지 않습니다. "재밌겠다!" 싶으면 일단 카드부터 꺼내고 보는 스피드형 소비러입니다.',
+    invest:'"요즘 이 테마가 미쳤다며?" 직관과 시대의 트렌드를 읽어내는 속도가 기가 막힙니다. 복잡한 분석보다는 뉴스나 커뮤니티의 뜨거운 반응에 꽂히면 일단 매수부터 하고 보는, 가능성에 모든 걸 거는 스피드형 행동파 투자자입니다.',
+    stockName:'에어비앤비 (ABNB)', stockDesc:'낯선 곳으로의 여행을 사랑하는 트렌드 세터! 전 세계 어디든 핫플로 만들어버리는 자유로운 여행 플랫폼 주식에 올라타 보세요.' },
+
+  ISTJ: { emoji:'📒', title:'빈틈없는 인간 가계부',
+    tags:['#가계부','#안전제일','#원칙주의'],
+    quote:'"1원의 오차도 용납할 수 없다. 오차율 제로 가계부 앱의 지배자"',
+    consume:'가계부 앱은 내 삶의 동반자. 1원 단위의 지출까지 꼼꼼히 트래킹하며 충동구매를 완벽하게 차단합니다. 가격 비교는 기본, 쿠폰 적용은 필수! 언제나 예산을 벗어나지 않는 오차율 0%의 바른 생활 소비러에요.',
+    invest:'내 소중한 시드머니가 마이너스 되는 건 절대 용납 못 합니다. 변동성 높은 주식보다는 예적금, 채권으로 탄탄한 베이스캠프를 차리는 안전제일주의! 주식을 하더라도 배당을 꼬박꼬박 주는 대장주만 골라 돌다리도 백 번 두드려보고 투자해요.',
+    stockName:'S&P 500 ETF (SPY)', stockDesc:'시드머니가 1원이라도 깎이는 건 용납 못 하는 안전제일주의! 미국을 대표하는 500개 기업에 쪼개서 투자하는 교과서적인 정석 투자가 마음 편해요.' },
+
+  ISTP: { emoji:'🎯', title:'야무진 짠테크 장인',
+    tags:['#소비욕','#스나이퍼','#단기매매'],
+    quote:'"평소엔 무지출 챌린지, 소비욕 도지면 풀할부! 쓸 땐 쓰는 야무진 짠테크"',
+    consume:'평소엔 무지출 챌린지 하듯 조용하지만 한 번 소비욕구가 생기면 아주 화끈하게 풀할부로 질러버립니다. 쓸 땐 확실하게 쓰고 안 쓸 땐 아예 안 쓰는 실전 압축형 소비의 달인이에요.',
+    invest:'복잡한 경제 이론이나 지루한 장기 투자는 체질에 안 맞습니다. 대신 차트의 흐름과 거래량을 감각으로 읽어내는 단기 매매의 고수예요. 먹잇감을 노리는 스나이퍼처럼 치고 빠지는 타이밍을 기가 막히게 잡아내어 수익을 냅니다.',
+    stockName:'코인베이스 (COIN)', stockDesc:'지루한 장투보다는 감각으로 타이밍을 노리는 스나이퍼! 남들이 두려워할 때 과감하게 들어가 단기 차익을 챙기기 좋은 다이내믹한 종목이에요.' },
+
+  ISFJ: { emoji:'🛡️', title:'세심한 지갑 보안관',
+    tags:['#짠테크','#철통방어','#배당주'],
+    quote:'"시드머니 철통 방어! 일확천금보다 내 멘탈과 통장의 평화가 더 소중해"',
+    consume:'통신사 할인, 마트 마감 세일, 포인트 적립 혜택은 절대 놓칠 수 없죠! 과소비보단 내 사람들과 함께 맛있는 저녁이나 실생활에 꼭 필요한 생필품을 알뜰하게 쟁여두는 데 특화된 지갑 보안관입니다.',
+    invest:'일확천금을 노리는 영끌이나 무리한 빚투는 하지 않아요. 피땀 흘려 모은 소중한 자산을 안전하게 굴리는 게 최우선입니다. 주가 변동에 스트레스를 받기보다 은행 이자보다 조금 더 챙겨주는 마음 편한 배당주나 안정적인 ETF 위주로 멘탈을 방어해요.',
+    stockName:'코카콜라 (KO)', stockDesc:'위험한 베팅보다는 내 자산 방어가 1순위! 시장이 흔들려도 끄떡없고 분기마다 달러 배당금을 꼬박꼬박 꽂아주는 필수소비재가 딱이에요.' },
+
+  ISFP: { emoji:'🌿', title:'탕진하는 평화주의자',
+    tags:['#소확행','#평화주의','#수면제투자'],
+    quote:'"내일의 갓생보단 오늘의 소고기가 주는 평화로운 소확행이 최고지!"',
+    consume:'"내일의 갓생보다 오늘의 소고기가 최고!" 스트레스 받지 않고 맛있는 거 먹으며 현재의 소소한 행복을 채우는 데 집중합니다. 플렉스보다는 일상에 스며드는 따뜻한 소확행을 모으는 데 돈을 씁니다.',
+    invest:'하루 종일 주식 창 쳐다보며 스트레스받는 건 질색이에요. 나의 평화로운 일상이 차트 때문에 흔들리는 건 원치 않아요. 한 번 정한 방법에 따라 꾸준히 자산을 늘려가는 \'마음 편한 수면제 투자\'를 가장 선호합니다.',
+    stockName:'알파벳 (GOOGL)', stockDesc:'주가 창 쳐다보며 스트레스받을 필요 있나요? 우리가 매일 숨 쉬듯 보는 \'유튜브\'와 \'구글 검색\'의 주인이니까요! 망할 일 없는 글로벌 1등 플랫폼에 묻어두면 그게 바로 최고의 수면제 투자죠.' },
+
+  INTJ: { emoji:'🧠', title:'AI급 완벽한 노후 설계사',
+    tags:['#계획소비','#장기투자','#갓생'],
+    quote:'"감정에 휘둘리는 충동 지출? 제 예산 엑셀표엔 없는 단어인데요."',
+    consume:'충동구매요? 제 계획표엔 없는 단어인데요. 철저한 예산 내에서만 지갑을 여는 완벽한 계획 소비의 표본입니다. 당장의 쾌락보다는 내 미래를 위한 확실한 투자가 아니라면 1원도 그냥 쓰지 않는 갓생러 마인드를 장착했어요.',
+    invest:'당장 내일 오를 테마주보다는 10년 뒤 세상을 바꿀 트렌드에 배팅합니다. 남들의 찌라시나 소음에 흔들리지 않고 거시 경제와 산업의 구조적 성장을 분석해 자신만의 완벽한 장기 투자 포트폴리오를 설계해 내는 전략가예요.',
+    stockName:'마이크로소프트 (MSFT)', stockDesc:'당장의 유행보다 세상을 바꿀 확실한 미래에 베팅하는 당신! 클라우드와 AI라는 메가 트렌드를 꽉 잡고 있는 든든한 1등 우량주가 제격이에요.' },
+
+  INTP: { emoji:'🔬', title:'방구석 차트 분석관',
+    tags:['#선택적소비','#데이터광','#차트분석'],
+    quote:'"평소엔 돈에 관심 없는 척, 좋아하는 분야에는 기꺼이 텅장이 돼요"',
+    consume:'평소 돈 쓰는 데 별 관심 없는 척하지만 좋아하는 취미나 덕질에는 여러 플랫폼을 비교해보며 최저가를 찾아내는 집요함을 보여줍니다. 쓸데없는 데는 지갑을 굳게 닫고 내가 좋아하는 것에만 화끈하게 쓰는 호불호가 확실한 소비 유형을 가지고 있어요.',
+    invest:'기업의 사업 실적, 투자 리포트, 주식 차트 분석까지 싹 다 긁어모아 팩트 폭격을 날립니다. 다른 사람들이 열광하는 투자도 합리적이라는 생각이 들지 않으면 비웃으며, 남들이 아직 모르지만 성장 가능성이 큰 기업을 발굴하고 최적의 매수 타이밍을 정하는 데이터 집착러입니다.',
+    stockName:'엔비디아 (NVDA)', stockDesc:'압도적인 데이터와 기술력만 믿는 당신! 남들이 따라올 수 없는 독보적인 점유율로 시장의 규칙을 지배하는 반도체 대장주가 어울려요.' },
+
+  INFJ: { emoji:'🌙', title:'고독한 신념 지킴이',
+    tags:['#가치소비','#신념투자','#존버'],
+    quote:'"차트는 흔들려도 내 신념은 안 흔들려요. 뚝심 있는 가치 소비러"',
+    consume:'유행은 거들뿐, 나는 내 길을 간다. 내 신념이나 취향에 딱 맞는 물건이라면, 가격이 비싸도 남들이 이해 못 해도 끝까지 기다려 쟁취하는 뚝심의 소유자입니다. 한번 산 물건은 유행이 지나도 10년 넘게 소중히 쓰는, 소비마저 신념 그 자체인 진지한 스타일이에요.',
+    invest:'내일 당장 주가가 폭락하더라도 멘탈이 흔들리지 않는 \'존버\' 끝판왕입니다. 주가의 작은 움직임보다는 내가 픽한 기업의 비전과 CEO의 철학을 더 중요하게 생각하며, 한 번 믿으면 끝까지 \'묻고 더블로 가는\' 뚝심의 가치 투자자입니다.',
+    stockName:'애플 (AAPL)', stockDesc:'변동성 앞에서도 멘탈이 흔들리지 않는 가치 수호자! 흔들리지 않는 브랜드 철학을 가진 주식이라면 마음 편히 존버할 수 있어요.' },
+
+  INFP: { emoji:'🌈', title:'낭만 가득한 텅장 요정',
+    tags:['#감성소비','#낭만파','#걱정인형'],
+    quote:'"예쁜 쓰레기 대환영! 나를 행복하게 하는 낭만에는 통장 바침"',
+    consume:'"예쁜 쓰레기? 내가 행복해졌으니 된거야." 영감과 감성을 충전하는 굿즈엔 지갑이 자동으로 열립니다. 낭만을 위해 통장을 희생하다보니, 통장에 찍힌 숫자가 요정처럼 작고 소중해진 이 시대의 낭만파예요.',
+    invest:'매수 버튼 앞에서 "지금 샀다가 떨어지면 어떡하지?" 수백 번 고뇌하며 머릿속에서 주식이 상장폐지로 휴지조각이 되는 상상부터 주가가 10배 오르는 상상까지 온갖 시나리오를 돌려보는 걱정 인형입니다. 주가의 작은 흔들림에도 멘탈이 쉽게 부숴지다 보니, 결국 밤잠 설치지 않을 만큼만 조금씩 모아가는 신중함 끝판왕 투자자예요.',
+    stockName:'디즈니 (DIS)', stockDesc:'세상을 따뜻하게 만들 스토리와 낭만을 사랑하는 감성 투자자! 전 세계인의 꿈과 환상을 책임지는 콘텐츠 주식에 스며들어 보세요.' },
+};
+
+let cur = 0;
+let sc = {};
+let answers = [];
+
+function startQuiz() {
+  cur = 0;
+  sc = { E:0, I:0, N:0, S:0, F:0, T:0, P:0, J:0 };
+  answers = [];
+  show('screenQuiz');
+  render();
+}
+
+function render() {
+  const q = Q[cur];
+  const total = Q.length;
+  document.getElementById('progressNum').textContent  = `${cur + 1} / ${total}`;
+  document.getElementById('dimChip').textContent       = q.label;
+  document.getElementById('btnBack').disabled          = cur === 0;
+  document.getElementById('progressFill').style.width  = `${(cur / total) * 100}%`;
+  document.getElementById('qNum').textContent          = `Q${cur + 1}`;
+  document.getElementById('qText').textContent         = q.text;
+  document.getElementById('options').innerHTML = `
+    <button class="opt-btn" onclick="pick('${q.va}')">
+      <span class="opt-letter">A</span><span>${q.a}</span>
+    </button>
+    <button class="opt-btn" onclick="pick('${q.vb}')">
+      <span class="opt-letter">B</span><span>${q.b}</span>
+    </button>`;
+}
+
+function pick(v) {
+  sc[v]++;
+  answers.push(v);
+  cur++;
+  if (cur >= Q.length) showResult();
+  else render();
+}
+
+function goBack() {
+  if (cur === 0) return;
+  cur--;
+  const prev = answers.pop();
+  sc[prev]--;
+  render();
+}
+
+function showResult() {
+  const ie = sc.E > sc.I ? 'E' : 'I';
+  const ns = sc.N > sc.S ? 'N' : 'S';
+  const ft = sc.F > sc.T ? 'F' : 'T';
+  const pj = sc.P > sc.J ? 'P' : 'J';
+  const type = ie + ns + ft + pj;
+  const r = RESULTS[type];
+
+  document.getElementById('rEmoji').textContent  = r.emoji;
+  document.getElementById('rType').textContent   = type;
+  document.getElementById('rTitle').textContent  = r.title;
+  document.getElementById('rQuote').textContent  = r.quote;
+  document.getElementById('rChips').innerHTML    = r.tags.map(t => `<span class="result-chip">${t}</span>`).join('');
+  document.getElementById('rConsume').textContent = r.consume;
+  document.getElementById('rInvest').textContent  = r.invest;
+  document.getElementById('rStock').innerHTML =
+    `<div class="stock-name">${r.stockName}</div><p>${r.stockDesc}</p>`;
+
+  show('screenResult');
+  window.scrollTo(0, 0);
+}
+
+function restartQuiz() { startQuiz(); }
+
+function show(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+</script>
+</body>
+</html>
