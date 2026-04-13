@@ -572,7 +572,8 @@ function startQuiz() {
   cur = 0;
   sc = { E:0, I:0, N:0, S:0, F:0, T:0, P:0, J:0 };
   answers = [];
-  history.replaceState(null, '', window.location.pathname); // URL 파라미터 제거
+  document.getElementById('qContent').style.animation = ''; // 남은 애니메이션 초기화
+  history.replaceState(null, '', window.location.pathname);
   show('screenQuiz');
   render();
 }
@@ -620,6 +621,7 @@ function pick(v, btnEl) {
 
 function goHome() {
   cur = 0; sc = {}; answers = [];
+  document.getElementById('qContent').style.animation = '';
   history.replaceState(null, '', location.pathname);
   show('screenStart');
 }
@@ -697,7 +699,12 @@ function renderResult(type) {
   window.scrollTo(0, 0);
 }
 
-function restartQuiz() { startQuiz(); }
+function restartQuiz() {
+  cur = 0; sc = {}; answers = [];
+  document.getElementById('qContent').style.animation = '';
+  history.replaceState(null, '', location.pathname);
+  show('screenStart');
+}
 
 // ── 공유 함수 ────────────────────────────────────────
 
