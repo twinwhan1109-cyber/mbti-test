@@ -548,23 +548,24 @@
 
 <script src="data.js"></script>
 <script>
-// ── 카카오 앱키 설정 (https://developers.kakao.com 에서 발급 후 교체)
-const KAKAO_APP_KEY = 'YOUR_KAKAO_APP_KEY';
-if (typeof Kakao !== 'undefined' && KAKAO_APP_KEY !== 'YOUR_KAKAO_APP_KEY') {
-  Kakao.init(KAKAO_APP_KEY);
-}
+const KAKAO_APP_KEY = 'f0452b8124fceb6607a35f3139037cc6';
 
 let cur = 0;
 let sc = {};
 let answers = [];
-let currentType = ''; // 현재 결과 MBTI 유형
+let currentType = '';
 
-// 페이지 로드 시 URL 파라미터로 결과 직접 표시
 window.addEventListener('DOMContentLoaded', () => {
+  // 카카오 SDK 초기화
+  if (typeof Kakao !== 'undefined' && !Kakao.isInitialized()) {
+    Kakao.init(KAKAO_APP_KEY);
+  }
+
+  // URL 파라미터로 결과 직접 표시
   const params = new URLSearchParams(window.location.search);
   const mbti = (params.get('mbti') || '').toUpperCase();
   if (mbti && RESULTS[mbti]) {
-    renderResult(mbti); // URL에 mbti 있으면 바로 결과 표시
+    renderResult(mbti);
   }
 });
 
@@ -715,21 +716,46 @@ function getShareUrl() {
 // 카카오톡 공유
 function shareKakao() {
   if (!currentType) return;
-  if (typeof Kakao === 'undefined' || !Kakao.isInitialized()) {
-    alert('카카오 공유를 사용하려면 카카오 앱키 설정이 필요합니다.\n개발자 문서를 참고해주세요.');
+
+  // SDK 미로드 시 재시도
+  if (typeof Kakao === 'undefined') {
+    alert('카카오 SDK를 불러오는 중입니다. 잠시 후 다시 시도해주세요.');
     return;
   }
+  if (!Kakao.isInitialized()) {
+    Kakao.init(KAKAO_APP_KEY);
+  }
+
   const r = RESULTS[currentType];
   const url = getShareUrl();
+  const imageUrl = `${window.location.origin}/images/${currentType.toLowerCase()}.png`;
+
   Kakao.Share.sendDefault({
     objectType: 'feed',
     content: {
-      title: `나의 경제 MBTI는 ${currentType}!`,
-      description: `${r.title} — ${r.quote}`,
-      imageUrl: `${window.location.origin}/images/${currentType.toLowerCase()}.png`,
-      link: { mobileWebUrl: url, webUrl: url },
+      title: `나의 경제 MBTI는 ${currentType} · ${r.title}`,
+      description: r.quote.replace(/^"|"$/g, ''),
+      imageUrl: imageUrl,
+      imageWidth: 400,
+      imageHeight: 400,
+      link: {
+        mobileWebUrl: url,
+        webUrl: url,
+      },
     },
-    buttons: [{ title: '나도 테스트하기', link: { mobileWebUrl: url, webUrl: url } }],
+    buttons: [
+      {
+        title: '내 결과 보기',
+        link: { mobileWebUrl: url, webUrl: url },
+      },
+      {
+        title: '나도 테스트하기',
+        link: {
+          mobileWebUrl: window.location.origin + window.location.pathname,
+          webUrl: window.location.origin + window.location.pathname,
+        },
+      },
+    ],
   });
 }
 
