@@ -477,6 +477,10 @@
       <div class="info-title">나와 잘 맞는 미국 주식</div>
       <div class="info-body" id="rStock"></div>
     </div>
+    <div class="info-card">
+      <div class="info-title">통계로 보는 나의 부자 잠재력</div>
+      <div class="info-body" id="rPotential"></div>
+    </div>
     <div class="share-card">
       <div class="share-label">결과 공유하기</div>
       <div class="share-btns">
@@ -652,6 +656,7 @@ function renderResult(type) {
   document.getElementById('rConsume').textContent = r.consume;
   document.getElementById('rInvest').textContent  = r.invest;
   document.getElementById('rStock').innerHTML     = `<div class="stock-name">${r.stockName}</div><p>${r.stockDesc}</p>`;
+  document.getElementById('rPotential').textContent = r.potential;
   document.getElementById('copyToast').textContent = '';
 
   show('screenResult');
