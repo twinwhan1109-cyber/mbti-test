@@ -278,47 +278,87 @@
       font-weight: 700;
       margin-bottom: 10px;
     }
+    /* ── DIG 로고 ── */
+    .dig-logo-bar {
+      text-align: center;
+      margin-bottom: 18px;
+    }
+    .dig-logo {
+      height: 28px;
+      width: auto;
+      opacity: 0.75;
+    }
+
+    /* ── 질문 전환 애니메이션 ── */
+    @keyframes qSlideInRight {
+      from { opacity: 0; transform: translateX(36px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes qSlideOutLeft {
+      from { opacity: 1; transform: translateX(0); }
+      to   { opacity: 0; transform: translateX(-36px); }
+    }
+    @keyframes qSlideInLeft {
+      from { opacity: 0; transform: translateX(-36px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes qSlideOutRight {
+      from { opacity: 1; transform: translateX(0); }
+      to   { opacity: 0; transform: translateX(36px); }
+    }
+    #qContent { will-change: transform, opacity; }
+
     /* ── SHARE ── */
     .share-card {
       background: #fff;
       border-radius: 22px;
-      padding: 24px;
+      padding: 24px 20px 20px;
       box-shadow: 0 4px 18px rgba(200,80,110,.07);
       margin-bottom: 12px;
       text-align: center;
     }
     .share-label {
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 700;
-      color: #aaa;
-      letter-spacing: 0.5px;
-      margin-bottom: 14px;
+      color: #bbb;
+      letter-spacing: 1px;
+      margin-bottom: 18px;
       text-transform: uppercase;
     }
     .share-btns {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
+      display: flex;
+      justify-content: center;
+      gap: 22px;
     }
-    .share-btn {
-      padding: 14px 10px;
+    .share-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .share-icon-btn {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
       border: none;
-      border-radius: 14px;
-      font-size: 14px;
-      font-weight: 700;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 7px;
-      transition: transform 0.15s, box-shadow 0.15s;
+      transition: transform 0.18s cubic-bezier(.34,1.56,.64,1), box-shadow 0.18s;
+      box-shadow: 0 3px 10px rgba(0,0,0,.10);
     }
-    .share-btn:hover  { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,.10); }
-    .share-btn:active { transform: translateY(0); }
-    .share-btn.kakao  { background: #FEE500; color: #3C1E1E; }
-    .share-btn.twitter { background: #000; color: #fff; }
-    .share-btn.copy   { background: #fceaef; color: #d4607c; }
-    .share-btn.save   { background: #f2f2f2; color: #444; }
+    .share-icon-btn:hover  { transform: translateY(-4px) scale(1.08); box-shadow: 0 10px 22px rgba(0,0,0,.16); }
+    .share-icon-btn:active { transform: scale(0.95); }
+    .share-icon-btn.kakao    { background: #FEE500; }
+    .share-icon-btn.twitter  { background: #000; }
+    .share-icon-btn.facebook { background: #1877F2; }
+    .share-icon-btn.save     { background: #fceaef; }
+    .share-item-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #999;
+    }
     .copy-toast {
       font-size: 13px;
       color: #d4607c;
@@ -362,6 +402,7 @@
 
   <!-- ══════ START ══════ -->
   <div id="screenStart" class="screen active">
+    <div class="dig-logo-bar"><img src="images/dig-logo.png" alt="DIG" class="dig-logo"></div>
     <div class="start-card">
       <div class="start-icon">💰</div>
       <h1>나의 경제 MBTI는?</h1>
@@ -377,6 +418,7 @@
 
   <!-- ══════ QUIZ ══════ -->
   <div id="screenQuiz" class="screen">
+    <div class="dig-logo-bar"><img src="images/dig-logo.png" alt="DIG" class="dig-logo"></div>
     <div class="quiz-header">
       <div class="progress-row">
         <button class="btn-back" id="btnBack" onclick="goBack()" disabled>← 이전</button>
@@ -387,15 +429,18 @@
         <div class="progress-fill" id="progressFill" style="width:0%"></div>
       </div>
     </div>
-    <div class="q-card">
-      <div class="q-num" id="qNum">Q1</div>
-      <div class="q-text" id="qText"></div>
+    <div id="qContent">
+      <div class="q-card">
+        <div class="q-num" id="qNum">Q1</div>
+        <div class="q-text" id="qText"></div>
+      </div>
+      <div class="options" id="options"></div>
     </div>
-    <div class="options" id="options"></div>
   </div>
 
   <!-- ══════ RESULT ══════ -->
   <div id="screenResult" class="screen result-screen">
+    <div class="dig-logo-bar"><img src="images/dig-logo.png" alt="DIG" class="dig-logo"></div>
     <div class="result-hero">
       <div class="result-emoji-big" id="rEmoji"></div>
       <div class="result-img-wrap">
@@ -422,10 +467,30 @@
     <div class="share-card">
       <div class="share-label">결과 공유하기</div>
       <div class="share-btns">
-        <button class="share-btn kakao"   onclick="shareKakao()">💬 카카오톡</button>
-        <button class="share-btn twitter" onclick="shareTwitter()">𝕏 트위터</button>
-        <button class="share-btn copy"    onclick="copyLink(this)">🔗 링크 복사</button>
-        <button class="share-btn save"    onclick="saveImage()">📷 이미지 저장</button>
+        <div class="share-item">
+          <button class="share-icon-btn kakao" onclick="shareKakao()">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="#3C1E1E"><path d="M12 3C6.48 3 2 6.69 2 11.25c0 2.87 1.77 5.39 4.44 6.93L5.5 21l4.18-2.08A11.6 11.6 0 0 0 12 19.5c5.52 0 10-3.69 10-8.25S17.52 3 12 3z"/></svg>
+          </button>
+          <span class="share-item-label">카카오톡</span>
+        </div>
+        <div class="share-item">
+          <button class="share-icon-btn twitter" onclick="shareTwitter()">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          </button>
+          <span class="share-item-label">트위터</span>
+        </div>
+        <div class="share-item">
+          <button class="share-icon-btn facebook" onclick="shareFacebook()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M13.5 21.95V14h2.7l.4-3.15H13.5v-2c0-.9.25-1.5 1.55-1.5H16.7V4.35A20 20 0 0 0 14.2 4.2c-2.4 0-4.05 1.47-4.05 4.17V10.85H7.5V14h2.65v7.95a10 10 0 0 0 3.35 0z"/></svg>
+          </button>
+          <span class="share-item-label">페이스북</span>
+        </div>
+        <div class="share-item">
+          <button class="share-icon-btn save" onclick="saveImage()">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="#d4607c"><path d="M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zm-7 3a4 4 0 1 1 0 8 4 4 0 0 1 0-8zm0 2a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 9.5 3.5-4.5 2.5 3 3.5-4.5 4.5 6H5z"/></svg>
+          </button>
+          <span class="share-item-label">이미지 저장</span>
+        </div>
       </div>
       <div class="copy-toast" id="copyToast"></div>
     </div>
@@ -669,19 +734,39 @@ function render() {
 }
 
 function pick(v) {
-  sc[v]++;
-  answers.push(v);
-  cur++;
-  if (cur >= Q.length) showResult();
-  else render();
+  const content = document.getElementById('qContent');
+  // 버튼 즉시 비활성화 (중복 클릭 방지)
+  content.querySelectorAll('.opt-btn').forEach(b => b.disabled = true);
+  content.style.animation = 'qSlideOutLeft 0.22s ease-in forwards';
+
+  setTimeout(() => {
+    sc[v]++;
+    answers.push(v);
+    cur++;
+    if (cur >= Q.length) {
+      showResult();
+    } else {
+      render();
+      content.style.animation = 'qSlideInRight 0.32s cubic-bezier(0.16,1,0.3,1) forwards';
+      setTimeout(() => { content.style.animation = ''; }, 320);
+    }
+  }, 220);
 }
 
 function goBack() {
   if (cur === 0) return;
-  cur--;
-  const prev = answers.pop();
-  sc[prev]--;
-  render();
+  const content = document.getElementById('qContent');
+  content.querySelectorAll('.opt-btn').forEach(b => b.disabled = true);
+  content.style.animation = 'qSlideOutRight 0.22s ease-in forwards';
+
+  setTimeout(() => {
+    cur--;
+    const prev = answers.pop();
+    sc[prev]--;
+    render();
+    content.style.animation = 'qSlideInLeft 0.32s cubic-bezier(0.16,1,0.3,1) forwards';
+    setTimeout(() => { content.style.animation = ''; }, 320);
+  }, 220);
 }
 
 function saveResult(type) {
@@ -767,6 +852,13 @@ function shareKakao() {
     },
     buttons: [{ title: '나도 테스트하기', link: { mobileWebUrl: url, webUrl: url } }],
   });
+}
+
+// 페이스북 공유
+function shareFacebook() {
+  if (!currentType) return;
+  const url = getShareUrl();
+  window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank');
 }
 
 // X(트위터) 공유
