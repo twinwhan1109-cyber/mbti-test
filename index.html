@@ -195,7 +195,25 @@
       box-shadow: 0 8px 40px rgba(200,80,110,.10);
       margin-bottom: 14px;
     }
-    .result-emoji-big { font-size: 60px; margin-bottom: 14px; line-height: 1; }
+    .result-emoji-big { font-size: 44px; margin-bottom: 6px; line-height: 1; }
+    .result-img-wrap {
+      width: 160px;
+      height: 160px;
+      margin: 0 auto 18px;
+      border-radius: 50%;
+      overflow: hidden;
+      background: #fceaef;
+      box-shadow: 0 6px 24px rgba(200,80,110,.15);
+    }
+    .result-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    @media (max-width: 480px) {
+      .result-img-wrap { width: 130px; height: 130px; }
+    }
     .result-type-txt {
       font-size: 52px;
       font-weight: 900;
@@ -329,6 +347,10 @@
   <div id="screenResult" class="screen result-screen">
     <div class="result-hero">
       <div class="result-emoji-big" id="rEmoji"></div>
+      <div class="result-img-wrap">
+        <img id="rImg" src="" alt="MBTI 결과 이미지"
+          onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'160\' height=\'160\'%3E%3Crect width=\'160\' height=\'160\' fill=\'%23fceaef\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dominant-baseline=\'middle\' font-size=\'48\' fill=\'%23e8849a\'%3E💰%3C/text%3E%3C/svg%3E'">
+      </div>
       <div class="result-type-txt" id="rType"></div>
       <div class="result-title-txt" id="rTitle"></div>
       <div class="result-chips" id="rChips"></div>
@@ -615,6 +637,7 @@ function showResult() {
   const r = RESULTS[type];
 
   document.getElementById('rEmoji').textContent  = r.emoji;
+  document.getElementById('rImg').src            = `images/${type.toLowerCase()}.png`;
   document.getElementById('rType').textContent   = type;
   document.getElementById('rTitle').textContent  = r.title;
   document.getElementById('rQuote').textContent  = r.quote;
