@@ -1,0 +1,16 @@
+{
+  // 프로젝트 이름 (Cloudflare Pages 프로젝트명과 동일하게)
+  "name": "mbti-test",
+  "compatibility_date": "2024-09-23",
+  "pages_build_output_dir": ".",
+
+  // D1 데이터베이스 연결 설정
+  // database_id는 아래 3단계에서 생성 후 여기에 붙여넣기
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "mbti-results",
+      "database_id": "여기에_D1_ID_붙여넣기"
+    }
+  ]
+}

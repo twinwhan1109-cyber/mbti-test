@@ -584,6 +584,28 @@ function goBack() {
   render();
 }
 
+function saveResult(type) {
+  // localStorage로 중복 저장 방지 (새로고침해도 다시 저장 안 됨)
+  const key = 'mbti_saved_' + type;
+  if (localStorage.getItem(key)) return;
+
+  fetch('/api/save-result', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      result_mbti: type,
+      source_page: window.location.href,
+    }),
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      localStorage.setItem(key, '1'); // 저장 성공 시 기록
+    }
+  })
+  .catch(() => {}); // 실패해도 사용자 경험에 영향 없도록 조용히 처리
+}
+
 function showResult() {
   const ie = sc.E > sc.I ? 'E' : 'I';
   const ns = sc.N > sc.S ? 'N' : 'S';
@@ -604,6 +626,7 @@ function showResult() {
 
   show('screenResult');
   window.scrollTo(0, 0);
+  saveResult(type); // 결과 API로 저장
 }
 
 function restartQuiz() { startQuiz(); }
