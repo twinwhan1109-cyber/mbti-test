@@ -132,17 +132,6 @@
     }
     .btn-back:hover { color: #3a8ec4; }
     .btn-back:disabled { opacity: 0; pointer-events: none; }
-    .btn-home {
-      background: none;
-      border: none;
-      color: #aaa;
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      padding: 0;
-      transition: color 0.15s;
-    }
-    .btn-home:hover { color: #3a8ec4; }
     .progress-track {
       background: #c2e2f5;
       border-radius: 8px;
@@ -468,7 +457,6 @@
       <div class="progress-row">
         <button class="btn-back" id="btnBack" onclick="goBack()">← 이전</button>
         <span class="progress-num" id="progressNum">1 / 13</span>
-        <button class="btn-home" onclick="goHome()">홈 ✕</button>
       </div>
       <div class="progress-track">
         <div class="progress-fill" id="progressFill" style="width:0%"></div>
@@ -593,7 +581,6 @@ function render() {
   const q = Q[cur];
   const total = Q.length;
   document.getElementById('progressNum').textContent  = `${cur + 1} / ${total}`;
-  document.getElementById('btnBack').disabled          = cur === 0;
   document.getElementById('progressFill').style.width  = `${(cur / total) * 100}%`;
   document.getElementById('qNum').textContent          = `Q${cur + 1}`;
   document.getElementById('qText').textContent         = q.text;
