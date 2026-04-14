@@ -5,12 +5,7 @@ export async function onRequestGet(context) {
   const { env } = context;
 
   try {
-    // 1. 전체 참여자 수 (results 테이블 기준)
-    const { total } = await env.DB
-      .prepare('SELECT COUNT(*) AS total FROM results')
-      .first();
-
-    // 2. 퀴즈 시작 수
+    // 1. 퀴즈 시작 수 = 전체 참여자
     const { starts } = await env.DB
       .prepare("SELECT COUNT(*) AS starts FROM events WHERE event_type = 'quiz_start'")
       .first();
@@ -29,28 +24,44 @@ export async function onRequestGet(context) {
       .first();
     const avg_session_sec = avg_ms ? Math.round(avg_ms / 1000) : null;
 
-    // 6. 뉴스레터 클릭 수 (전체 클릭 수 + 중복 제거 고유 세션 수)
+    // 6. 뉴스레터 클릭 수 (총 클릭 횟수)
     const { newsletter_clicks } = await env.DB
       .prepare("SELECT COUNT(*) AS newsletter_clicks FROM events WHERE event_type = 'newsletter_click'")
       .first();
-    const { newsletter_uniq } = await env.DB
-      .prepare("SELECT COUNT(DISTINCT session_id) AS newsletter_uniq FROM events WHERE event_type = 'newsletter_click' AND session_id IS NOT NULL")
-      .first();
 
-    // 7. 인스타그램 클릭 수 (전체 클릭 수 + 중복 제거 고유 세션 수)
+    // 7. 인스타그램 클릭 수 (총 클릭 횟수)
     const { insta_clicks } = await env.DB
       .prepare("SELECT COUNT(*) AS insta_clicks FROM events WHERE event_type = 'insta_click'")
       .first();
-    const { insta_uniq } = await env.DB
-      .prepare("SELECT COUNT(DISTINCT session_id) AS insta_uniq FROM events WHERE event_type = 'insta_click' AND session_id IS NOT NULL")
+
+    // 8. 전환율 = 퀴즈 완료 세션 중 클릭한 고유 세션 수 / 완료 수 × 100
+    //    (session_id가 있는 경우만 집계 — null session은 URL 직접 접근자)
+    const { newsletter_conv_count } = await env.DB
+      .prepare(`
+        SELECT COUNT(DISTINCT c.session_id) AS newsletter_conv_count
+        FROM events c
+        INNER JOIN events q ON c.session_id = q.session_id
+        WHERE c.event_type = 'newsletter_click'
+          AND q.event_type = 'quiz_complete'
+          AND c.session_id IS NOT NULL
+      `)
+      .first();
+    const { insta_conv_count } = await env.DB
+      .prepare(`
+        SELECT COUNT(DISTINCT c.session_id) AS insta_conv_count
+        FROM events c
+        INNER JOIN events q ON c.session_id = q.session_id
+        WHERE c.event_type = 'insta_click'
+          AND q.event_type = 'quiz_complete'
+          AND c.session_id IS NOT NULL
+      `)
       .first();
 
-    // 8. 전환율 = 고유 세션 기준 / 완료 수 × 100 (각각 100% 상한)
     const newsletter_conversion = completes > 0
-      ? Math.min(100, Math.round(((newsletter_uniq || 0) / completes) * 100))
+      ? Math.min(100, Math.round(((newsletter_conv_count || 0) / completes) * 100))
       : null;
     const insta_conversion = completes > 0
-      ? Math.min(100, Math.round(((insta_uniq || 0) / completes) * 100))
+      ? Math.min(100, Math.round(((insta_conv_count || 0) / completes) * 100))
       : null;
 
     // 9. MBTI 유형별 분포
@@ -88,7 +99,7 @@ export async function onRequestGet(context) {
     }));
 
     return json({
-      total_participants: total,
+      total_participants: starts,
       quiz_starts: starts,
       quiz_completes: completes,
       completion_rate,
