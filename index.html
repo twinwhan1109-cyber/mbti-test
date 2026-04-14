@@ -281,6 +281,7 @@
     .info-title {
       font-size: 16px;
       font-weight: 800;
+      line-height: 1;
       color: #1a4550;
       margin-bottom: 14px;
       display: inline-flex;
@@ -288,9 +289,10 @@
       gap: 6px;
       background: #f0fbad;
       border-radius: 10px;
-      padding: 6px 14px;
+      padding: 8px 14px;
       width: auto;
     }
+    .info-title > * { vertical-align: middle; }
     .info-body { font-size: 15px; color: #333; line-height: 1.85; }
     .stock-name {
       display: inline-block;
@@ -402,16 +404,16 @@
       padding: 18px;
       background: #fff;
       color: #45C7D6;
-      border: 2px solid #45C7D6;
+      border: none;
       border-radius: 16px;
       font-size: 17px;
       font-weight: 700;
       cursor: pointer;
-      box-shadow: 0 4px 16px rgba(69,199,214,.15);
+      box-shadow: none;
       transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
       margin-top: 4px;
     }
-    .btn-retry:hover  { background: #edfbfc; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(69,199,214,.25); }
+    .btn-retry:hover  { background: #edfbfc; transform: translateY(-2px); }
     .btn-retry:active { transform: translateY(0); }
     .btn-dig {
       width: 100%;
@@ -434,15 +436,15 @@
     .dig-page-lines {
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: 8px;
       margin-bottom: 36px;
       text-align: center;
     }
     .dig-page-lines p {
       font-size: 16px;
       font-weight: 600;
-      color: #45C7D6;
-      line-height: 1.6;
+      color: #111;
+      line-height: 1.4;
       margin: 0;
     }
     .dig-btn-group {
@@ -464,14 +466,14 @@
       transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s ease;
     }
     .btn-newsletter {
-      background: #f0fbad;
-      color: #111;
+      background: #45C7D6;
+      color: #fff;
       box-shadow: 0 3px 10px rgba(42,163,178,.16);
     }
     .btn-newsletter:hover { transform: translateY(-3px); box-shadow: 0 6px 16px rgba(42,163,178,.22); }
     .btn-insta {
-      background: #f0fbad;
-      color: #111;
+      background: #45C7D6;
+      color: #fff;
       box-shadow: 0 3px 10px rgba(42,163,178,.14);
     }
     .btn-insta:hover { transform: translateY(-3px); box-shadow: 0 6px 16px rgba(42,163,178,.20); }
@@ -503,9 +505,9 @@
       <h1>나의 경제 MBTI는?</h1>
       <p>13개의 질문으로 알아보는<br>나만의 소비·투자 유형 테스트</p>
       <div class="chip-row">
-        <span class="chip">💸 소비 성향</span>
+        <span class="chip">💳 소비 성향</span>
         <span class="chip">📈 투자 유형</span>
-        <span class="chip">🇺🇸 추천 미국 주식</span>
+        <span class="chip">💵 추천 미국 주식</span>
       </div>
       <button class="btn-primary" onclick="startQuiz()">테스트 시작하기 →</button>
       <div class="participant-count">
@@ -637,7 +639,7 @@
       </div>
       <div class="copy-toast" id="copyToast"></div>
     </div>
-    <button class="btn-retry" onclick="restartQuiz()">다시 테스트하기 🔄</button>
+    <button class="btn-retry" onclick="restartQuiz()">다시 테스트 하기 🔄</button>
   </div>
 
 </div>
