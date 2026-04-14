@@ -186,6 +186,12 @@
       <div class="metric-value" id="mInsta">—</div>
       <div class="metric-unit">회</div>
     </div>
+    <div class="metric-card">
+      <div class="metric-icon">🎯</div>
+      <div class="metric-label">전환율</div>
+      <div class="metric-value" id="mConversion">—</div>
+      <div class="metric-unit">% (완료자 중 링크 클릭)</div>
+    </div>
   </div>
 
   <!-- 하단 차트 -->
@@ -223,6 +229,7 @@ async function loadData() {
     set('mSession',    d.avg_session_sec != null ? d.avg_session_sec : '—');
     set('mNewsletter', fmt(d.newsletter_clicks));
     set('mInsta',      fmt(d.insta_clicks));
+    set('mConversion', d.conversion_rate != null ? d.conversion_rate : '—');
 
     // MBTI 바 차트
     renderMbti(d.by_mbti || []);

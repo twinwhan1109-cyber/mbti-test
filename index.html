@@ -434,7 +434,8 @@
     .btn-dig:hover  { background: #eff6ff; border-color: #2563eb; transform: translateY(-2px); }
     .btn-dig:active { transform: translateY(0); }
 
-    /* ── DIG 페이지 ── */
+    /* ── DIG 섹션 ── */
+    .dig-info-card { background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); }
     .dig-page-lines {
       display: flex;
       flex-direction: column;
@@ -628,14 +629,7 @@
       </div>
       <div class="copy-toast" id="copyToast"></div>
     </div>
-    <button class="btn-retry" onclick="restartQuiz()">다시 테스트하기 🔄</button>
-    <button class="btn-dig" onclick="show('screenDig')">DIG 더 알아보기 →</button>
-  </div>
-
-  <!-- ══════ DIG ══════ -->
-  <div id="screenDig" class="screen">
-    <div class="dig-logo-bar"><img src="images/dig-logo.png" alt="DIG" class="dig-logo"></div>
-    <div class="start-card">
+    <div class="info-card dig-info-card">
       <div class="dig-page-lines">
         <p>이미 10만 명은 디그로 경제 공부 중!🔥</p>
         <p>복잡한 뉴스 대신, 출퇴근 길에 딱 5분!⏱</p>
@@ -647,7 +641,7 @@
         <a class="btn-dig-action btn-insta" href="https://www.instagram.com/teamdig_official/" target="_blank" id="btnInsta" onclick="trackEvent('insta_click')">디그 인스타 놀러가기 👀</a>
       </div>
     </div>
-    <button class="btn-retry" style="margin-top:16px;" onclick="show('screenResult')">← 결과로 돌아가기</button>
+    <button class="btn-retry" onclick="restartQuiz()">다시 테스트하기 🔄</button>
   </div>
 
 </div>

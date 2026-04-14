@@ -5,7 +5,7 @@ export async function onRequestGet(context) {
   const { env } = context;
 
   try {
-    // 1. 전체 참여자 수 (테스트 완료 기준)
+    // 1. 전체 참여자 수 (results 테이블 기준)
     const { total } = await env.DB
       .prepare('SELECT COUNT(*) AS total FROM results')
       .first();
@@ -15,31 +15,40 @@ export async function onRequestGet(context) {
       .prepare("SELECT COUNT(*) AS starts FROM events WHERE event_type = 'quiz_start'")
       .first();
 
-    // 3. 완료율 (완료 / 시작 × 100)
-    const completion_rate = starts > 0 ? Math.round((total / starts) * 100) : null;
+    // 3. 퀴즈 완료 수 (events 기준)
+    const { completes } = await env.DB
+      .prepare("SELECT COUNT(*) AS completes FROM events WHERE event_type = 'quiz_complete'")
+      .first();
 
-    // 4. 평균 세션 시간 (quiz_complete 이벤트의 duration_ms 평균)
+    // 4. 완료율 = 완료 수 / 시작 수 × 100
+    const completion_rate = starts > 0 ? Math.round((completes / starts) * 100) : null;
+
+    // 5. 평균 세션 시간
     const { avg_ms } = await env.DB
       .prepare("SELECT AVG(duration_ms) AS avg_ms FROM events WHERE event_type = 'quiz_complete' AND duration_ms IS NOT NULL")
       .first();
     const avg_session_sec = avg_ms ? Math.round(avg_ms / 1000) : null;
 
-    // 5. 뉴스레터 클릭 수
+    // 6. 뉴스레터 클릭 수
     const { newsletter_clicks } = await env.DB
       .prepare("SELECT COUNT(*) AS newsletter_clicks FROM events WHERE event_type = 'newsletter_click'")
       .first();
 
-    // 6. 인스타그램 클릭 수
+    // 7. 인스타그램 클릭 수
     const { insta_clicks } = await env.DB
       .prepare("SELECT COUNT(*) AS insta_clicks FROM events WHERE event_type = 'insta_click'")
       .first();
 
-    // 7. MBTI 유형별 분포
+    // 8. 전환율 = (뉴스레터 + 인스타 클릭) / 완료 수 × 100
+    const total_clicks = (newsletter_clicks || 0) + (insta_clicks || 0);
+    const conversion_rate = completes > 0 ? Math.round((total_clicks / completes) * 100) : null;
+
+    // 9. MBTI 유형별 분포
     const { results: by_mbti } = await env.DB
       .prepare('SELECT result_mbti, COUNT(*) AS count FROM results GROUP BY result_mbti ORDER BY count DESC')
       .all();
 
-    // 8. 최근 30일 일별 완료 수
+    // 10. 최근 30일 일별 완료 수
     const { results: daily } = await env.DB
       .prepare(`
         SELECT DATE(created_at) AS date, COUNT(*) AS count
@@ -53,10 +62,12 @@ export async function onRequestGet(context) {
     return json({
       total_participants: total,
       quiz_starts: starts,
+      quiz_completes: completes,
       completion_rate,
       avg_session_sec,
       newsletter_clicks,
       insta_clicks,
+      conversion_rate,
       by_mbti,
       daily_last_30: daily,
     });
