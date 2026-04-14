@@ -1,7 +1,7 @@
 // POST /api/track
 // 퀴즈 시작 / 완료 / 버튼 클릭 이벤트 기록
 
-const VALID_EVENTS = ['quiz_start', 'quiz_complete', 'newsletter_click', 'insta_click'];
+const VALID_EVENTS = ['quiz_start', 'quiz_complete', 'newsletter_click', 'insta_click', 'quiz_abandon'];
 
 export async function onRequestPost(context) {
   const { request, env } = context;
@@ -13,7 +13,7 @@ export async function onRequestPost(context) {
     return json({ error: '요청 형식이 올바르지 않습니다.' }, 400);
   }
 
-  const { event_type, session_id, duration_ms } = body;
+  const { event_type, session_id, duration_ms, question_num } = body;
 
   if (!VALID_EVENTS.includes(event_type)) {
     return json({ error: '유효하지 않은 이벤트 유형입니다.' }, 400);
@@ -21,11 +21,12 @@ export async function onRequestPost(context) {
 
   try {
     await env.DB.prepare(
-      'INSERT INTO events (event_type, session_id, duration_ms) VALUES (?, ?, ?)'
+      'INSERT INTO events (event_type, session_id, duration_ms, question_num) VALUES (?, ?, ?, ?)'
     ).bind(
       event_type,
       session_id || null,
-      duration_ms != null ? Math.round(duration_ms) : null
+      duration_ms != null ? Math.round(duration_ms) : null,
+      question_num != null ? Number(question_num) : null
     ).run();
 
     return json({ success: true });

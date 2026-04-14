@@ -111,6 +111,29 @@
     }
     .mbti-bar-num { font-size: 11px; font-weight: 700; color: #fff; }
 
+    /* 이탈률 차트 */
+    .abandon-row {
+      display: flex; align-items: center;
+      gap: 10px; margin-bottom: 9px;
+    }
+    .abandon-label {
+      width: 36px; font-size: 12px; font-weight: 700;
+      color: #6b7280; text-align: right; flex-shrink: 0;
+    }
+    .abandon-bar-wrap {
+      flex: 1; background: #fff1f2;
+      border-radius: 6px; height: 20px; overflow: hidden;
+    }
+    .abandon-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #ef4444, #f87171);
+      border-radius: 6px;
+      transition: width 0.8s cubic-bezier(0.16,1,0.3,1);
+      display: flex; align-items: center; justify-content: flex-end;
+      padding-right: 6px;
+    }
+    .abandon-bar-num { font-size: 10px; font-weight: 700; color: #fff; }
+
     /* 일별 차트 */
     .daily-chart {
       display: flex;
@@ -262,6 +285,12 @@
 
   </div>
 
+  <!-- 문항별 이탈률 -->
+  <div class="section-card" style="margin-top:20px;">
+    <div class="section-title">🚪 문항별 이탈률 (시작자 대비 %)</div>
+    <div id="abandonChart"><div class="loading">로딩 중...</div></div>
+  </div>
+
   <div class="updated-at" id="updatedAtBottom"></div>
 </div>
 
@@ -309,6 +338,9 @@ async function loadData() {
 
     // 일별 차트
     renderDaily(d.daily_last_30 || []);
+
+    // 문항별 이탈률
+    renderAbandon(d.abandon_by_question || []);
 
     const now = new Date().toLocaleString('ko-KR');
     document.getElementById('updatedAt').textContent = `마지막 업데이트: ${now}`;
@@ -363,6 +395,26 @@ function renderDaily(data) {
         </div>`;
     }).join('') + `</div>`;
   document.getElementById('dailyChart').innerHTML = html;
+}
+
+function renderAbandon(data) {
+  const el = document.getElementById('abandonChart');
+  if (!data.length) { el.innerHTML = '<div class="loading">이탈 데이터 없음 (데이터 수집 시작 후 표시)</div>'; return; }
+  const maxRate = Math.max(...data.map(r => r.abandon_rate), 1);
+  const html = data.map(r => {
+    const barPct = Math.round((r.abandon_rate / maxRate) * 100);
+    return `
+      <div class="abandon-row">
+        <span class="abandon-label">Q${r.question_num}</span>
+        <div class="abandon-bar-wrap">
+          <div class="abandon-bar" style="width:${barPct}%">
+            <span class="abandon-bar-num">${r.abandon_rate}%</span>
+          </div>
+        </div>
+        <span style="font-size:11px;color:#9ca3af;flex-shrink:0;">${r.abandon_count}명</span>
+      </div>`;
+  }).join('');
+  el.innerHTML = html;
 }
 
 // 이미 인증된 경우 바로 데이터 로드

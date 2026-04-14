@@ -29,22 +29,28 @@ export async function onRequestGet(context) {
       .first();
     const avg_session_sec = avg_ms ? Math.round(avg_ms / 1000) : null;
 
-    // 6. 뉴스레터 클릭 수
+    // 6. 뉴스레터 클릭 수 (전체 클릭 수 + 중복 제거 고유 세션 수)
     const { newsletter_clicks } = await env.DB
       .prepare("SELECT COUNT(*) AS newsletter_clicks FROM events WHERE event_type = 'newsletter_click'")
       .first();
+    const { newsletter_uniq } = await env.DB
+      .prepare("SELECT COUNT(DISTINCT session_id) AS newsletter_uniq FROM events WHERE event_type = 'newsletter_click' AND session_id IS NOT NULL")
+      .first();
 
-    // 7. 인스타그램 클릭 수
+    // 7. 인스타그램 클릭 수 (전체 클릭 수 + 중복 제거 고유 세션 수)
     const { insta_clicks } = await env.DB
       .prepare("SELECT COUNT(*) AS insta_clicks FROM events WHERE event_type = 'insta_click'")
       .first();
+    const { insta_uniq } = await env.DB
+      .prepare("SELECT COUNT(DISTINCT session_id) AS insta_uniq FROM events WHERE event_type = 'insta_click' AND session_id IS NOT NULL")
+      .first();
 
-    // 8. 전환율 (각각 100% 상한)
+    // 8. 전환율 = 고유 세션 기준 / 완료 수 × 100 (각각 100% 상한)
     const newsletter_conversion = completes > 0
-      ? Math.min(100, Math.round(((newsletter_clicks || 0) / completes) * 100))
+      ? Math.min(100, Math.round(((newsletter_uniq || 0) / completes) * 100))
       : null;
     const insta_conversion = completes > 0
-      ? Math.min(100, Math.round(((insta_clicks || 0) / completes) * 100))
+      ? Math.min(100, Math.round(((insta_uniq || 0) / completes) * 100))
       : null;
 
     // 9. MBTI 유형별 분포
@@ -63,6 +69,24 @@ export async function onRequestGet(context) {
       `)
       .all();
 
+    // 11. 문항별 이탈 수 (quiz_abandon 이벤트, question_num 기준)
+    const { results: abandon_raw } = await env.DB
+      .prepare(`
+        SELECT question_num, COUNT(*) AS count
+        FROM events
+        WHERE event_type = 'quiz_abandon' AND question_num IS NOT NULL
+        GROUP BY question_num
+        ORDER BY question_num ASC
+      `)
+      .all();
+
+    // 이탈률 = 해당 문항 이탈 수 / 퀴즈 시작 수 × 100
+    const abandon_by_question = abandon_raw.map(r => ({
+      question_num: r.question_num,
+      abandon_count: r.count,
+      abandon_rate: starts > 0 ? Math.round((r.count / starts) * 100) : 0,
+    }));
+
     return json({
       total_participants: total,
       quiz_starts: starts,
@@ -75,6 +99,7 @@ export async function onRequestGet(context) {
       insta_conversion,
       by_mbti,
       daily_last_30: daily,
+      abandon_by_question,
     });
   } catch (e) {
     return json({ error: e.message }, 500);
