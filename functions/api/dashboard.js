@@ -39,9 +39,13 @@ export async function onRequestGet(context) {
       .prepare("SELECT COUNT(*) AS insta_clicks FROM events WHERE event_type = 'insta_click'")
       .first();
 
-    // 8. 전환율 = (뉴스레터 + 인스타 클릭) / 완료 수 × 100
-    const total_clicks = (newsletter_clicks || 0) + (insta_clicks || 0);
-    const conversion_rate = completes > 0 ? Math.round((total_clicks / completes) * 100) : null;
+    // 8. 전환율 (각각 100% 상한)
+    const newsletter_conversion = completes > 0
+      ? Math.min(100, Math.round(((newsletter_clicks || 0) / completes) * 100))
+      : null;
+    const insta_conversion = completes > 0
+      ? Math.min(100, Math.round(((insta_clicks || 0) / completes) * 100))
+      : null;
 
     // 9. MBTI 유형별 분포
     const { results: by_mbti } = await env.DB
@@ -67,7 +71,8 @@ export async function onRequestGet(context) {
       avg_session_sec,
       newsletter_clicks,
       insta_clicks,
-      conversion_rate,
+      newsletter_conversion,
+      insta_conversion,
       by_mbti,
       daily_last_30: daily,
     });
