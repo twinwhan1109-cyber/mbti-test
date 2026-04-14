@@ -107,6 +107,20 @@
     }
     .btn-primary:hover  { transform: translateY(-2px); box-shadow: 0 10px 32px rgba(37,99,235,.42); }
     .btn-primary:active { transform: translateY(0); }
+    .participant-count {
+      margin-top: 18px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #2563eb;
+    }
+    .participant-count span { font-size: 18px; font-weight: 900; }
+    .start-share-card {
+      margin-top: 18px;
+      box-shadow: none !important;
+      border: 1.5px solid #dbeafe;
+      border-radius: 18px;
+      padding: 18px 16px 14px;
+    }
 
     /* ── QUIZ ── */
     .quiz-header { margin-bottom: 20px; }
@@ -497,6 +511,39 @@
         <span class="chip">🇺🇸 추천 미국 주식</span>
       </div>
       <button class="btn-primary" onclick="startQuiz()">테스트 시작하기 →</button>
+      <div class="participant-count">
+        현재 <span id="participantNum">...</span>명이 숨겨진 경제 자아를 찾았어요!
+      </div>
+      <div class="share-card start-share-card">
+        <div class="share-label">친구에게 공유하기</div>
+        <div class="share-btns">
+          <div class="share-item">
+            <button class="share-icon-btn kakao" onclick="shareKakaoStart()">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="#3C1E1E"><path d="M12 3C6.48 3 2 6.69 2 11.25c0 2.87 1.77 5.39 4.44 6.93L5.5 21l4.18-2.08A11.6 11.6 0 0 0 12 19.5c5.52 0 10-3.69 10-8.25S17.52 3 12 3z"/></svg>
+            </button>
+            <span class="share-item-label">카카오톡</span>
+          </div>
+          <div class="share-item">
+            <button class="share-icon-btn facebook" onclick="shareFacebookStart()">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M13.5 21.95V14h2.7l.4-3.15H13.5v-2c0-.9.25-1.5 1.55-1.5H16.7V4.35A20 20 0 0 0 14.2 4.2c-2.4 0-4.05 1.47-4.05 4.17V10.85H7.5V14h2.65v7.95a10 10 0 0 0 3.35 0z"/></svg>
+            </button>
+            <span class="share-item-label">페이스북</span>
+          </div>
+          <div class="share-item">
+            <button class="share-icon-btn twitter" onclick="shareTwitterStart()">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            </button>
+            <span class="share-item-label">트위터</span>
+          </div>
+          <div class="share-item">
+            <button class="share-icon-btn save" onclick="copyStartLink(this)">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="#2563eb"><path d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244"/></svg>
+            </button>
+            <span class="share-item-label">링크 복사</span>
+          </div>
+        </div>
+        <div class="copy-toast" id="copyToastStart"></div>
+      </div>
     </div>
   </div>
 
@@ -626,6 +673,19 @@ window.addEventListener('DOMContentLoaded', () => {
   if (mbti && RESULTS[mbti]) {
     renderResult(mbti);
   }
+
+  // 참여자 수 로드
+  fetch('/api/stats')
+    .then(r => r.json())
+    .then(data => {
+      if (data.total !== undefined) {
+        document.getElementById('participantNum').textContent =
+          Number(data.total).toLocaleString('ko-KR');
+      }
+    })
+    .catch(() => {
+      document.getElementById('participantNum').textContent = '0';
+    });
 });
 
 function startQuiz() {
@@ -770,6 +830,44 @@ function restartQuiz() {
 
 function getShareUrl() {
   return `${window.location.origin}${window.location.pathname}?mbti=${currentType}`;
+}
+
+function getStartUrl() {
+  return `${window.location.origin}${window.location.pathname}`;
+}
+
+// ── 첫 페이지 공유 함수 ──
+function shareKakaoStart() {
+  if (typeof Kakao === 'undefined') return;
+  if (!Kakao.isInitialized()) Kakao.init(KAKAO_APP_KEY);
+  const url = getStartUrl();
+  Kakao.Share.sendDefault({
+    objectType: 'feed',
+    content: {
+      title: '나의 경제 MBTI는 뭘까? 💰',
+      description: '13개 질문으로 알아보는 나만의 소비·투자 유형 테스트!',
+      imageUrl: `${window.location.origin}/images/cover.png`,
+      link: { mobileWebUrl: url, webUrl: url },
+    },
+    buttons: [{ title: '테스트 하러가기', link: { mobileWebUrl: url, webUrl: url } }],
+  });
+}
+function shareFacebookStart() {
+  const url = getStartUrl();
+  window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank');
+}
+function shareTwitterStart() {
+  const text = '나의 경제 MBTI는 뭘까? 💰 13개 질문으로 알아보는 소비·투자 유형 테스트!';
+  const url = getStartUrl();
+  window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank');
+}
+function copyStartLink(btn) {
+  const url = getStartUrl();
+  navigator.clipboard.writeText(url).then(() => {
+    const toast = document.getElementById('copyToastStart');
+    toast.textContent = '링크가 복사됐어요!';
+    setTimeout(() => { toast.textContent = ''; }, 2000);
+  });
 }
 
 // 카카오톡 공유
