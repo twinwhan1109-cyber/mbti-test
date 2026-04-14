@@ -23,6 +23,7 @@
     }
     .header h1 { font-size: 22px; font-weight: 800; letter-spacing: -0.3px; }
     .header span { font-size: 13px; opacity: 0.8; }
+    .header-btns { display: flex; gap: 10px; align-items: center; }
     .refresh-btn {
       background: rgba(255,255,255,0.2);
       border: none; color: #fff;
@@ -31,6 +32,45 @@
       transition: background 0.2s;
     }
     .refresh-btn:hover { background: rgba(255,255,255,0.3); }
+    .reset-btn {
+      background: rgba(239,68,68,0.25);
+      border: 1.5px solid rgba(239,68,68,0.5); color: #fff;
+      padding: 8px 16px; border-radius: 10px;
+      font-size: 13px; font-weight: 600; cursor: pointer;
+      transition: background 0.2s;
+    }
+    .reset-btn:hover { background: rgba(239,68,68,0.45); }
+
+    /* 리셋 모달 */
+    .modal-overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 9999;
+      align-items: center; justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-box {
+      background: #fff; border-radius: 20px;
+      padding: 36px 32px; text-align: center;
+      width: 320px; box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    }
+    .modal-box h3 { font-size: 18px; font-weight: 800; color: #1a4550; margin-bottom: 10px; }
+    .modal-box p  { font-size: 13px; color: #6b7280; line-height: 1.6; margin-bottom: 24px; }
+    .modal-btns { display: flex; gap: 10px; }
+    .modal-cancel {
+      flex: 1; padding: 12px; border-radius: 12px;
+      border: 2px solid #e5e7eb; background: #fff;
+      font-size: 14px; font-weight: 600; color: #6b7280; cursor: pointer;
+    }
+    .modal-cancel:hover { background: #f9fafb; }
+    .modal-confirm {
+      flex: 1; padding: 12px; border-radius: 12px;
+      border: none; background: #ef4444;
+      font-size: 14px; font-weight: 700; color: #fff; cursor: pointer;
+    }
+    .modal-confirm:hover { background: #dc2626; }
+    .modal-result { font-size: 13px; margin-top: 12px; font-weight: 600; }
 
     .container { max-width: 1100px; margin: 0 auto; padding: 32px 20px; }
 
@@ -168,7 +208,23 @@
     <h1>📊 DIG MBTI 대시보드</h1>
     <span id="updatedAt">로딩 중...</span>
   </div>
-  <button class="refresh-btn" onclick="loadData()">↻ 새로고침</button>
+  <div class="header-btns">
+    <button class="refresh-btn" onclick="loadData()">↻ 새로고침</button>
+    <button class="reset-btn" onclick="openReset()">🗑 데이터 초기화</button>
+  </div>
+</div>
+
+<!-- 초기화 확인 모달 -->
+<div class="modal-overlay" id="resetModal">
+  <div class="modal-box">
+    <h3>⚠️ 데이터 초기화</h3>
+    <p>events · results 테이블의 <strong>모든 데이터</strong>가 삭제됩니다.<br>이 작업은 되돌릴 수 없습니다.</p>
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="closeReset()">취소</button>
+      <button class="modal-confirm" onclick="doReset()">초기화</button>
+    </div>
+    <div class="modal-result" id="resetResult"></div>
+  </div>
 </div>
 
 <div class="container">
@@ -389,6 +445,42 @@ function renderAbandon(data) {
 }
 
 loadData();
+
+function openReset() {
+  document.getElementById('resetResult').textContent = '';
+  document.getElementById('resetModal').classList.add('open');
+}
+function closeReset() {
+  document.getElementById('resetModal').classList.remove('open');
+}
+async function doReset() {
+  const btn = document.querySelector('.modal-confirm');
+  const msg = document.getElementById('resetResult');
+  btn.disabled = true;
+  btn.textContent = '초기화 중...';
+  try {
+    const res = await fetch('/api/reset', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ secret: 'dig-reset-9zb4k-2024' }),
+    });
+    const d = await res.json();
+    if (d.success) {
+      msg.style.color = '#2aa3b2';
+      msg.textContent = '✅ 초기화 완료!';
+      setTimeout(() => { closeReset(); loadData(); }, 1200);
+    } else {
+      msg.style.color = '#ef4444';
+      msg.textContent = '오류: ' + (d.error || '알 수 없는 오류');
+    }
+  } catch (e) {
+    msg.style.color = '#ef4444';
+    msg.textContent = '오류: ' + e.message;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '초기화';
+  }
+}
 </script>
 
 </body>
