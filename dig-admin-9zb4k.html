@@ -9,17 +9,17 @@
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Apple SD Gothic Neo', sans-serif;
       background: #f0f4ff;
-      color: #1e3a5f;
+      color: #1a4550;
       min-height: 100vh;
     }
     .header {
-      background: linear-gradient(135deg, #1d4ed8 0%, #3b82f6 100%);
+      background: linear-gradient(135deg, #1e8c9a 0%, #45c7d6 100%);
       color: #fff;
       padding: 24px 32px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      box-shadow: 0 4px 20px rgba(37,99,235,.25);
+      box-shadow: 0 4px 20px rgba(42,163,178,.25);
     }
     .header h1 { font-size: 22px; font-weight: 800; letter-spacing: -0.3px; }
     .header span { font-size: 13px; opacity: 0.8; }
@@ -45,7 +45,7 @@
       background: #fff;
       border-radius: 20px;
       padding: 24px 20px;
-      box-shadow: 0 4px 16px rgba(37,99,235,.07);
+      box-shadow: 0 4px 16px rgba(42,163,178,.07);
       position: relative;
       overflow: hidden;
     }
@@ -53,7 +53,7 @@
       content: '';
       position: absolute; top: 0; left: 0;
       width: 4px; height: 100%;
-      background: linear-gradient(180deg, #2563eb, #60a5fa);
+      background: linear-gradient(180deg, #2aa3b2, #7dd5dc);
       border-radius: 2px 0 0 2px;
     }
     .metric-icon { font-size: 28px; margin-bottom: 10px; }
@@ -64,7 +64,7 @@
     }
     .metric-value {
       font-size: 32px; font-weight: 900;
-      color: #1d4ed8; line-height: 1;
+      color: #1e8c9a; line-height: 1;
     }
     .metric-unit { font-size: 14px; font-weight: 600; color: #6b7280; margin-top: 4px; }
 
@@ -80,11 +80,11 @@
       background: #fff;
       border-radius: 20px;
       padding: 24px;
-      box-shadow: 0 4px 16px rgba(37,99,235,.07);
+      box-shadow: 0 4px 16px rgba(42,163,178,.07);
     }
     .section-title {
       font-size: 15px; font-weight: 700;
-      color: #1e3a5f; margin-bottom: 18px;
+      color: #1a4550; margin-bottom: 18px;
       display: flex; align-items: center; gap: 8px;
     }
 
@@ -95,15 +95,15 @@
     }
     .mbti-label {
       width: 46px; font-size: 13px; font-weight: 700;
-      color: #1d4ed8; text-align: right; flex-shrink: 0;
+      color: #1e8c9a; text-align: right; flex-shrink: 0;
     }
     .mbti-bar-wrap {
-      flex: 1; background: #eff6ff;
+      flex: 1; background: #edfbfc;
       border-radius: 6px; height: 22px; overflow: hidden;
     }
     .mbti-bar {
       height: 100%;
-      background: linear-gradient(90deg, #2563eb, #60a5fa);
+      background: linear-gradient(90deg, #2aa3b2, #7dd5dc);
       border-radius: 6px;
       transition: width 0.8s cubic-bezier(0.16,1,0.3,1);
       display: flex; align-items: center; justify-content: flex-end;
@@ -147,7 +147,7 @@
     .daily-bar-wrap { flex: 1; width: 100%; display: flex; align-items: flex-end; }
     .daily-bar {
       width: 100%; border-radius: 4px 4px 0 0;
-      background: linear-gradient(180deg, #3b82f6, #2563eb);
+      background: linear-gradient(180deg, #45c7d6, #2aa3b2);
       transition: height 0.6s ease;
       min-height: 3px;
     }
@@ -177,9 +177,15 @@
   <div class="metrics-grid">
     <div class="metric-card">
       <div class="metric-icon">👥</div>
-      <div class="metric-label">전체 참여자 (퀴즈 시작)</div>
+      <div class="metric-label">고유 참여자 (IP 기준)</div>
       <div class="metric-value" id="mTotal">—</div>
       <div class="metric-unit">명</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-icon">🚀</div>
+      <div class="metric-label">퀴즈 시작 (누적)</div>
+      <div class="metric-value" id="mStarts">—</div>
+      <div class="metric-unit">회</div>
     </div>
     <div class="metric-card">
       <div class="metric-icon">✅</div>
@@ -216,6 +222,36 @@
       <div class="metric-label">인스타 전환율</div>
       <div class="metric-value" id="mInstaConv">—</div>
       <div class="metric-unit">% (완료자 중)</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-icon">📤</div>
+      <div class="metric-label">총 공유수</div>
+      <div class="metric-value" id="mTotalShares">—</div>
+      <div class="metric-unit">회</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-icon">💬</div>
+      <div class="metric-label">카카오 공유</div>
+      <div class="metric-value" id="mKakaoShares">—</div>
+      <div class="metric-unit">회</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-icon">👍</div>
+      <div class="metric-label">페이스북 공유</div>
+      <div class="metric-value" id="mFacebookShares">—</div>
+      <div class="metric-unit">회</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-icon">🐦</div>
+      <div class="metric-label">트위터 공유</div>
+      <div class="metric-value" id="mTwitterShares">—</div>
+      <div class="metric-unit">회</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-icon">🖼️</div>
+      <div class="metric-label">이미지/링크 공유</div>
+      <div class="metric-value" id="mImageShares">—</div>
+      <div class="metric-unit">회</div>
     </div>
   </div>
 
@@ -254,13 +290,19 @@ async function loadData() {
     const d = await res.json();
 
     // 주요 지표
-    set('mTotal',         fmt(d.total_participants));
+    set('mTotal',         fmt(d.unique_participants));
+    set('mStarts',        fmt(d.quiz_starts));
     set('mRate',          d.completion_rate     != null ? d.completion_rate     : '—');
     set('mSession',       d.avg_session_sec     != null ? d.avg_session_sec     : '—');
     set('mNewsletter',    fmt(d.newsletter_clicks));
     set('mInsta',         fmt(d.insta_clicks));
     set('mNewsletterConv', d.newsletter_conversion != null ? d.newsletter_conversion : '—');
     set('mInstaConv',      d.insta_conversion      != null ? d.insta_conversion      : '—');
+    set('mTotalShares',    fmt(d.total_shares));
+    set('mKakaoShares',    fmt(d.kakao_shares));
+    set('mFacebookShares', fmt(d.facebook_shares));
+    set('mTwitterShares',  fmt(d.twitter_shares));
+    set('mImageShares',    fmt(d.image_shares));
 
     // MBTI 바 차트
     renderMbti(d.by_mbti || []);

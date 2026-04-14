@@ -5,12 +5,21 @@ export async function onRequestGet(context) {
   const { env } = context;
 
   try {
-    // 1. 퀴즈 시작 수 = 전체 참여자
+    // 1. 퀴즈 시작 수 (누적)
     const { starts } = await env.DB
       .prepare("SELECT COUNT(*) AS starts FROM events WHERE event_type = 'quiz_start'")
       .first();
 
-    // 3. 퀴즈 완료 수 (events 기준)
+    // 2. 고유 참여자 수 (IP 기준, 없으면 session_id fallback)
+    const { unique_participants } = await env.DB
+      .prepare(`
+        SELECT COUNT(DISTINCT COALESCE(ip_address, session_id)) AS unique_participants
+        FROM events
+        WHERE event_type = 'quiz_start'
+      `)
+      .first();
+
+    // 3. 퀴즈 완료 수
     const { completes } = await env.DB
       .prepare("SELECT COUNT(*) AS completes FROM events WHERE event_type = 'quiz_complete'")
       .first();
@@ -24,18 +33,17 @@ export async function onRequestGet(context) {
       .first();
     const avg_session_sec = avg_ms ? Math.round(avg_ms / 1000) : null;
 
-    // 6. 뉴스레터 클릭 수 (총 클릭 횟수)
+    // 6. 뉴스레터 클릭 수
     const { newsletter_clicks } = await env.DB
       .prepare("SELECT COUNT(*) AS newsletter_clicks FROM events WHERE event_type = 'newsletter_click'")
       .first();
 
-    // 7. 인스타그램 클릭 수 (총 클릭 횟수)
+    // 7. 인스타그램 클릭 수
     const { insta_clicks } = await env.DB
       .prepare("SELECT COUNT(*) AS insta_clicks FROM events WHERE event_type = 'insta_click'")
       .first();
 
-    // 8. 전환율 = 퀴즈 완료 세션 중 클릭한 고유 세션 수 / 완료 수 × 100
-    //    (session_id가 있는 경우만 집계 — null session은 URL 직접 접근자)
+    // 8. 전환율 = 퀴즈 완료 세션 중 클릭한 고유 세션 / 완료 수 × 100
     const { newsletter_conv_count } = await env.DB
       .prepare(`
         SELECT COUNT(DISTINCT c.session_id) AS newsletter_conv_count
@@ -64,12 +72,19 @@ export async function onRequestGet(context) {
       ? Math.min(100, Math.round(((insta_conv_count || 0) / completes) * 100))
       : null;
 
-    // 9. MBTI 유형별 분포
+    // 9. 공유 버튼별 클릭 수
+    const { kakao_shares }    = await env.DB.prepare("SELECT COUNT(*) AS kakao_shares    FROM events WHERE event_type = 'share_kakao'").first();
+    const { facebook_shares } = await env.DB.prepare("SELECT COUNT(*) AS facebook_shares FROM events WHERE event_type = 'share_facebook'").first();
+    const { twitter_shares }  = await env.DB.prepare("SELECT COUNT(*) AS twitter_shares  FROM events WHERE event_type = 'share_twitter'").first();
+    const { image_shares }    = await env.DB.prepare("SELECT COUNT(*) AS image_shares    FROM events WHERE event_type = 'share_image'").first();
+    const total_shares = (kakao_shares || 0) + (facebook_shares || 0) + (twitter_shares || 0) + (image_shares || 0);
+
+    // 10. MBTI 유형별 분포
     const { results: by_mbti } = await env.DB
       .prepare('SELECT result_mbti, COUNT(*) AS count FROM results GROUP BY result_mbti ORDER BY count DESC')
       .all();
 
-    // 10. 최근 30일 일별 완료 수
+    // 11. 최근 30일 일별 완료 수
     const { results: daily } = await env.DB
       .prepare(`
         SELECT DATE(created_at) AS date, COUNT(*) AS count
@@ -80,7 +95,7 @@ export async function onRequestGet(context) {
       `)
       .all();
 
-    // 11. 문항별 이탈 수 (quiz_abandon 이벤트, question_num 기준)
+    // 12. 문항별 이탈 수
     const { results: abandon_raw } = await env.DB
       .prepare(`
         SELECT question_num, COUNT(*) AS count
@@ -91,7 +106,6 @@ export async function onRequestGet(context) {
       `)
       .all();
 
-    // 이탈률 = 해당 문항 이탈 수 / 퀴즈 시작 수 × 100
     const abandon_by_question = abandon_raw.map(r => ({
       question_num: r.question_num,
       abandon_count: r.count,
@@ -99,7 +113,7 @@ export async function onRequestGet(context) {
     }));
 
     return json({
-      total_participants: starts,
+      unique_participants,
       quiz_starts: starts,
       quiz_completes: completes,
       completion_rate,
@@ -108,6 +122,11 @@ export async function onRequestGet(context) {
       insta_clicks,
       newsletter_conversion,
       insta_conversion,
+      kakao_shares,
+      facebook_shares,
+      twitter_shares,
+      image_shares,
+      total_shares,
       by_mbti,
       daily_last_30: daily,
       abandon_by_question,
