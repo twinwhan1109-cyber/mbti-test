@@ -216,8 +216,7 @@
     }
 
     /* ── LOADING ── */
-    .loading-screen {
-      display: flex;
+    .screen.active.loading-screen {
       align-items: center;
       justify-content: center;
       min-height: 100vh;
@@ -926,8 +925,10 @@ function showResult() {
     document.getElementById('loadingState').style.display = 'none';
     document.getElementById('doneState').style.display    = 'flex';
 
-    // 2초 후 → 결과 페이지
+    // 2초 후 → 로딩 화면 즉시 제거 후 결과 페이지
     setTimeout(() => {
+      // 로딩 화면 active 제거 (exit 애니메이션 없이 즉시 숨김)
+      document.getElementById('screenLoading').classList.remove('active');
       renderResult(type);
     }, 2000);
   }, 2000);
