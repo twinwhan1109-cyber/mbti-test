@@ -215,6 +215,66 @@
       flex-shrink: 0;
     }
 
+    /* ── LOADING ── */
+    .loading-screen {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background: #fff;
+    }
+    .loading-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .load-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+    .load-circle {
+      width: 88px;
+      height: 88px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .load-circle--red   { background: #e53935; }
+    .load-circle--green { background: #2ecc71; animation: popIn 0.4s cubic-bezier(0.34,1.56,0.64,1) both; }
+    .load-label {
+      font-size: 17px;
+      font-weight: 700;
+      color: #333;
+      margin: 0;
+    }
+    /* 빨간 원 스피너 회전 */
+    .load-spinner {
+      width: 52px; height: 52px;
+      animation: spin 0.9s linear infinite;
+    }
+    /* 초록 체크 선 그리기 */
+    .load-check {
+      width: 52px; height: 52px;
+    }
+    .load-check polyline {
+      stroke-dasharray: 40;
+      stroke-dashoffset: 40;
+      animation: drawCheck 0.45s ease-out 0.15s forwards;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    @keyframes drawCheck {
+      to { stroke-dashoffset: 0; }
+    }
+    @keyframes popIn {
+      0%   { transform: scale(0.5); opacity: 0; }
+      100% { transform: scale(1);   opacity: 1; }
+    }
+
     /* ── RESULT ── */
     .result-screen { padding-bottom: 20px; }
     .result-hero {
@@ -568,6 +628,33 @@
     </div>
   </div>
 
+  <!-- ══════ LOADING ══════ -->
+  <div id="screenLoading" class="screen loading-screen">
+    <div class="loading-inner">
+      <!-- 계산 중 상태 -->
+      <div id="loadingState" class="load-state">
+        <div class="load-circle load-circle--red">
+          <svg class="load-spinner" viewBox="0 0 50 50">
+            <circle cx="25" cy="25" r="20" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="4"/>
+            <circle cx="25" cy="25" r="20" fill="none" stroke="#fff" stroke-width="4"
+              stroke-dasharray="80 46" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <p class="load-label">계산 중</p>
+      </div>
+      <!-- 완료 상태 -->
+      <div id="doneState" class="load-state" style="display:none">
+        <div class="load-circle load-circle--green">
+          <svg class="load-check" viewBox="0 0 50 50">
+            <polyline points="13,26 22,35 37,17" fill="none" stroke="#fff"
+              stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <p class="load-label">완료</p>
+      </div>
+    </div>
+  </div>
+
   <!-- ══════ RESULT ══════ -->
   <div id="screenResult" class="screen result-screen">
     <div class="dig-logo-bar"><img src="images/dig-logo.png" alt="DIG" class="dig-logo"></div>
@@ -827,8 +914,23 @@ function showResult() {
   const duration_ms = quizStartTime ? Date.now() - quizStartTime : null;
   quizCompleted = true;
   trackEvent('quiz_complete', { duration_ms });
-  renderResult(type);
   saveResult(type);
+
+  // 로딩 화면 표시
+  document.getElementById('loadingState').style.display = 'flex';
+  document.getElementById('doneState').style.display    = 'none';
+  show('screenLoading');
+
+  // 2초 후 → 완료 상태
+  setTimeout(() => {
+    document.getElementById('loadingState').style.display = 'none';
+    document.getElementById('doneState').style.display    = 'flex';
+
+    // 2초 후 → 결과 페이지
+    setTimeout(() => {
+      renderResult(type);
+    }, 2000);
+  }, 2000);
 }
 
 // 결과 화면 렌더링 (퀴즈 완료 & URL 직접 접근 공통 사용)
