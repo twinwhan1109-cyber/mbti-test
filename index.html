@@ -216,11 +216,19 @@
     }
 
     /* ── LOADING ── */
-    .screen.active.loading-screen {
+    /* ── LOADING OVERLAY (fixed, 완전히 독립) ── */
+    #screenLoading {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: #fff;
+      z-index: 999;
       align-items: center;
       justify-content: center;
-      min-height: 100vh;
-      background: #fff;
+    }
+    #screenLoading.visible {
+      display: flex;
     }
     .loading-inner {
       display: flex;
@@ -553,6 +561,32 @@
   </style>
 </head>
 <body>
+
+<!-- 로딩 오버레이: container 완전 밖, position:fixed로 독립 -->
+<div id="screenLoading">
+  <div class="loading-inner">
+    <div id="loadingState" class="load-state">
+      <div class="load-circle load-circle--red">
+        <svg class="load-spinner" viewBox="0 0 50 50">
+          <circle cx="25" cy="25" r="20" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="4"/>
+          <circle cx="25" cy="25" r="20" fill="none" stroke="#fff" stroke-width="4"
+            stroke-dasharray="80 46" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <p class="load-label">계산 중</p>
+    </div>
+    <div id="doneState" class="load-state" style="display:none">
+      <div class="load-circle load-circle--green">
+        <svg class="load-check" viewBox="0 0 50 50">
+          <polyline points="13,26 22,35 37,17" fill="none" stroke="#fff"
+            stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <p class="load-label">완료</p>
+    </div>
+  </div>
+</div>
+
 <div class="container">
 
   <!-- ══════ START ══════ -->
@@ -628,32 +662,6 @@
   </div>
 
   <!-- ══════ LOADING ══════ -->
-  <div id="screenLoading" class="screen loading-screen">
-    <div class="loading-inner">
-      <!-- 계산 중 상태 -->
-      <div id="loadingState" class="load-state">
-        <div class="load-circle load-circle--red">
-          <svg class="load-spinner" viewBox="0 0 50 50">
-            <circle cx="25" cy="25" r="20" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="4"/>
-            <circle cx="25" cy="25" r="20" fill="none" stroke="#fff" stroke-width="4"
-              stroke-dasharray="80 46" stroke-linecap="round"/>
-          </svg>
-        </div>
-        <p class="load-label">계산 중</p>
-      </div>
-      <!-- 완료 상태 -->
-      <div id="doneState" class="load-state" style="display:none">
-        <div class="load-circle load-circle--green">
-          <svg class="load-check" viewBox="0 0 50 50">
-            <polyline points="13,26 22,35 37,17" fill="none" stroke="#fff"
-              stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </div>
-        <p class="load-label">완료</p>
-      </div>
-    </div>
-  </div>
-
   <!-- ══════ RESULT ══════ -->
   <div id="screenResult" class="screen result-screen">
     <div class="dig-logo-bar"><img src="images/dig-logo.png" alt="DIG" class="dig-logo"></div>
@@ -915,20 +923,20 @@ function showResult() {
   trackEvent('quiz_complete', { duration_ms });
   saveResult(type);
 
-  // 로딩 화면 표시
+  // 로딩 오버레이 표시 (position:fixed, 다른 화면에 영향 없음)
+  const loadingEl = document.getElementById('screenLoading');
   document.getElementById('loadingState').style.display = 'flex';
   document.getElementById('doneState').style.display    = 'none';
-  show('screenLoading');
+  loadingEl.classList.add('visible');
 
   // 2초 후 → 완료 상태
   setTimeout(() => {
     document.getElementById('loadingState').style.display = 'none';
     document.getElementById('doneState').style.display    = 'flex';
 
-    // 2초 후 → 로딩 화면 즉시 제거 후 결과 페이지
+    // 2초 후 → 오버레이 제거 후 결과 페이지
     setTimeout(() => {
-      // 로딩 화면 active 제거 (exit 애니메이션 없이 즉시 숨김)
-      document.getElementById('screenLoading').classList.remove('active');
+      loadingEl.classList.remove('visible');
       renderResult(type);
     }, 2000);
   }, 2000);
