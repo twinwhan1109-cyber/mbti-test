@@ -281,12 +281,12 @@
     .info-title {
       font-size: 16px;
       font-weight: 800;
-      color: #1e8c9a;
+      color: #1a4550;
       margin-bottom: 14px;
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      background: #d6f4f7;
+      background: #f0fbad;
       border-radius: 10px;
       padding: 6px 14px;
       width: auto;
@@ -430,7 +430,7 @@
     .btn-dig:active { transform: translateY(0); }
 
     /* ── DIG 섹션 ── */
-    .dig-info-card { background: #fff; }
+    .dig-info-card { background: #fff; border: 2px solid #45C7D6; }
     .dig-page-lines {
       display: flex;
       flex-direction: column;
@@ -466,15 +466,15 @@
     .btn-newsletter {
       background: #f0fbad;
       color: #111;
-      box-shadow: 0 6px 24px rgba(42,163,178,.32);
+      box-shadow: 0 3px 10px rgba(42,163,178,.16);
     }
-    .btn-newsletter:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(42,163,178,.42); }
+    .btn-newsletter:hover { transform: translateY(-3px); box-shadow: 0 6px 16px rgba(42,163,178,.22); }
     .btn-insta {
       background: #f0fbad;
       color: #111;
-      box-shadow: 0 6px 24px rgba(42,163,178,.28);
+      box-shadow: 0 3px 10px rgba(42,163,178,.14);
     }
-    .btn-insta:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(42,163,178,.40); }
+    .btn-insta:hover { transform: translateY(-3px); box-shadow: 0 6px 16px rgba(42,163,178,.20); }
 
     @media (max-width: 480px) {
       .container { padding: 20px 12px 40px; }
@@ -733,6 +733,16 @@ function render() {
     <button class="opt-btn" onclick="pick('${q.vb}', this)">
       <span class="opt-letter">B</span><span>${q.b}</span>
     </button>`;
+  requestAnimationFrame(() => {
+    const btns = document.querySelectorAll('#options .opt-btn');
+    if (btns.length === 2) {
+      btns[0].style.minHeight = '';
+      btns[1].style.minHeight = '';
+      const maxH = Math.max(btns[0].offsetHeight, btns[1].offsetHeight);
+      btns[0].style.minHeight = maxH + 'px';
+      btns[1].style.minHeight = maxH + 'px';
+    }
+  });
 }
 
 function pick(v, btnEl) {
