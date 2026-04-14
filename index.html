@@ -13,7 +13,7 @@
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Apple SD Gothic Neo', sans-serif;
-      background: #f8fce8;
+      background: #45C7D6;
       min-height: 100vh;
       color: #1a3033;
     }
@@ -182,7 +182,7 @@
     .opt-btn {
       width: 100%;
       padding: 18px 20px;
-      background: #f8fce8;
+      background: #fff;
       border: 2px solid #c8df40;
       border-radius: 18px;
       font-size: 15px;
@@ -191,7 +191,7 @@
       text-align: left;
       cursor: pointer;
       display: flex;
-      align-items: flex-start;
+      align-items: center;
       gap: 12px;
       line-height: 1.55;
       transition: border-color 0.5s ease, background 0.5s ease, transform 0.5s cubic-bezier(0.34,1.4,0.64,1), box-shadow 0.5s ease;
@@ -208,11 +208,11 @@
     }
     .opt-letter {
       min-width: 28px; height: 28px;
-      background: #f5fcc0; color: #7a8f00;
+      background: #e8f9fa; color: #45C7D6;
       border-radius: 8px;
       display: flex; align-items: center; justify-content: center;
       font-weight: 700; font-size: 13px;
-      flex-shrink: 0; margin-top: 1px;
+      flex-shrink: 0;
     }
 
     /* ── RESULT ── */
@@ -244,17 +244,16 @@
       .result-img-wrap { max-width: 100%; }
     }
     .result-type-txt {
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 600;
-      color: #9aaf00;
+      color: #111;
       letter-spacing: 0.3px;
       margin-bottom: 8px;
-      opacity: 0.85;
     }
     .result-title-txt {
       font-size: 30px;
       font-weight: 900;
-      color: #1a3033;
+      color: #45C7D6;
       margin-bottom: 14px;
       line-height: 1.3;
       letter-spacing: -0.5px;
@@ -303,12 +302,12 @@
     /* ── DIG 로고 ── */
     .dig-logo-bar {
       text-align: center;
-      margin-bottom: 18px;
+      margin-bottom: 10px;
     }
     .dig-logo {
-      height: 72px;
+      height: 90px;
       width: auto;
-      opacity: 0.88;
+      opacity: 0.9;
     }
 
     /* ── 질문 전환 애니메이션 ── */
@@ -332,10 +331,10 @@
     }
     /* 선택된 답변 버튼 flash */
     @keyframes optPick {
-      0%   { transform: scale(1); background: #f8fce8; }
-      35%  { transform: scale(0.96) translateY(2px); background: linear-gradient(135deg,#7a8f00,#E3F879); color: #fff; border-color: #7a8f00; box-shadow: 0 4px 20px rgba(180,196,0,.35); }
-      70%  { transform: scale(0.98) translateY(0); background: linear-gradient(135deg,#9aaf00,#E3F879); color: #fff; }
-      100% { transform: scale(0.97); background: linear-gradient(135deg,#9aaf00,#E3F879); color: #fff; }
+      0%   { transform: scale(1); background: #fff; }
+      35%  { transform: scale(0.96) translateY(2px); background: #45C7D6; color: #fff; border-color: #45C7D6; box-shadow: 0 4px 20px rgba(69,199,214,.40); }
+      70%  { transform: scale(0.98) translateY(0); background: #45C7D6; color: #fff; }
+      100% { transform: scale(0.97); background: #45C7D6; color: #fff; }
     }
     #qContent { will-change: transform, opacity; }
 
@@ -401,18 +400,18 @@
     .btn-retry {
       width: 100%;
       padding: 18px;
-      background: linear-gradient(135deg, #c8df40 0%, #E3F879 100%);
-      color: #3a4200;
-      border: none;
+      background: #fff;
+      color: #45C7D6;
+      border: 2px solid #45C7D6;
       border-radius: 16px;
       font-size: 17px;
       font-weight: 700;
       cursor: pointer;
-      box-shadow: 0 6px 24px rgba(180,196,0,.32);
-      transition: transform 0.15s, box-shadow 0.15s;
+      box-shadow: 0 4px 16px rgba(69,199,214,.15);
+      transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
       margin-top: 4px;
     }
-    .btn-retry:hover  { transform: translateY(-2px); box-shadow: 0 10px 32px rgba(180,196,0,.42); }
+    .btn-retry:hover  { background: #edfbfc; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(69,199,214,.25); }
     .btn-retry:active { transform: translateY(0); }
     .btn-dig {
       width: 100%;
@@ -431,18 +430,18 @@
     .btn-dig:active { transform: translateY(0); }
 
     /* ── DIG 섹션 ── */
-    .dig-info-card { background: linear-gradient(135deg, #f8fce8 0%, #f5fcc0 100%); }
+    .dig-info-card { background: #fff; }
     .dig-page-lines {
       display: flex;
       flex-direction: column;
       gap: 14px;
       margin-bottom: 36px;
-      text-align: left;
+      text-align: center;
     }
     .dig-page-lines p {
       font-size: 16px;
       font-weight: 600;
-      color: #3a4200;
+      color: #45C7D6;
       line-height: 1.6;
       margin: 0;
     }
@@ -471,11 +470,11 @@
     }
     .btn-newsletter:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(180,196,0,.42); }
     .btn-insta {
-      background: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045);
-      color: #fff;
-      box-shadow: 0 6px 24px rgba(131,58,180,.28);
+      background: #E3F879;
+      color: #111;
+      box-shadow: 0 6px 24px rgba(180,196,0,.28);
     }
-    .btn-insta:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(131,58,180,.38); }
+    .btn-insta:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(180,196,0,.40); }
 
     @media (max-width: 480px) {
       .container { padding: 20px 12px 40px; }
@@ -484,7 +483,8 @@
       .q-card { padding: 26px 20px 22px; }
       .q-text { font-size: 17px; }
       .opt-btn { padding: 16px 16px; font-size: 14px; }
-      .result-type-txt { font-size: 44px; }
+      .result-type-txt { font-size: 13px; }
+      .result-title-txt { font-size: 26px; }
       .result-hero { padding: 36px 20px 30px; }
       .info-card { padding: 22px 18px; }
     }
@@ -595,6 +595,18 @@
       <div class="info-title">📊 통계로 보는 나의 부자 잠재력</div>
       <div class="info-body" id="rPotential"></div>
     </div>
+    <div class="info-card dig-info-card">
+      <div class="dig-page-lines">
+        <p>이미 10만 명은 디그로 경제 공부 중!🔥</p>
+        <p>복잡한 뉴스 대신, 출퇴근 길에 딱 5분!⏱</p>
+        <p>디그가 쉽게 정리해드릴게요✨</p>
+        <p>우리 세상 돌아가는 흐름 같이 공부해요🌍</p>
+      </div>
+      <div class="dig-btn-group">
+        <a class="btn-dig-action btn-newsletter" href="https://page.stibee.com/subscriptions/159161" target="_blank" id="btnNewsletter" onclick="trackEvent('newsletter_click')">디그랑 경제 천재 되기 📩</a>
+        <a class="btn-dig-action btn-insta" href="https://www.instagram.com/teamdig_official/" target="_blank" id="btnInsta" onclick="trackEvent('insta_click')">디그 인스타 놀러가기 👀</a>
+      </div>
+    </div>
     <div class="share-card">
       <div class="share-label">결과 공유하기</div>
       <div class="share-btns">
@@ -618,24 +630,12 @@
         </div>
         <div class="share-item">
           <button class="share-icon-btn save" onclick="saveImage()">
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="#9aaf00"><path d="M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zm-7 3a4 4 0 1 1 0 8 4 4 0 0 1 0-8zm0 2a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 9.5 3.5-4.5 2.5 3 3.5-4.5 4.5 6H5z"/></svg>
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="#45C7D6"><path d="M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zm-7 3a4 4 0 1 1 0 8 4 4 0 0 1 0-8zm0 2a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 9.5 3.5-4.5 2.5 3 3.5-4.5 4.5 6H5z"/></svg>
           </button>
           <span class="share-item-label">이미지 저장</span>
         </div>
       </div>
       <div class="copy-toast" id="copyToast"></div>
-    </div>
-    <div class="info-card dig-info-card">
-      <div class="dig-page-lines">
-        <p>이미 10만 명은 디그로 경제 공부 중!🔥</p>
-        <p>복잡한 뉴스 대신, 출퇴근 길에 딱 5분!⏱</p>
-        <p>디그가 쉽게 정리해드릴게요✨</p>
-        <p>우리 세상 돌아가는 흐름 같이 공부해요🌍</p>
-      </div>
-      <div class="dig-btn-group">
-        <a class="btn-dig-action btn-newsletter" href="https://page.stibee.com/subscriptions/159161" target="_blank" id="btnNewsletter" onclick="trackEvent('newsletter_click')">디그랑 경제 천재 되기 📩</a>
-        <a class="btn-dig-action btn-insta" href="https://www.instagram.com/teamdig_official/" target="_blank" id="btnInsta" onclick="trackEvent('insta_click')">디그 인스타 놀러가기 👀</a>
-      </div>
     </div>
     <button class="btn-retry" onclick="restartQuiz()">다시 테스트하기 🔄</button>
   </div>
