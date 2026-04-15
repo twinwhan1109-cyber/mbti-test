@@ -374,7 +374,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 32px 36px;
+      padding: 16px 36px 51px; /* 35px 위로 올림 (top 줄이고 bottom 늘림) */
       font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', sans-serif;
     }
     #saveCard .sc-inner {
@@ -393,9 +393,9 @@
       flex-shrink: 0;
     }
     #saveCard .sc-img-wrap {
-      width: 270px;
-      height: 270px;
-      border-radius: 32px;
+      width: 305px;
+      height: 305px;
+      border-radius: 34px;
       overflow: hidden;
       background: #d6f4f7;
       box-shadow: 0 6px 24px rgba(42,163,178,.18);
@@ -436,10 +436,12 @@
       background: #e2e8f0; margin-bottom: 14px;
     }
     #saveCard .sc-buddy-row {
-      display: flex; gap: 6px; justify-content: center; width: 100%;
+      display: flex; gap: 0; justify-content: space-between;
+      width: 305px; flex-shrink: 0;
     }
     #saveCard .sc-buddy-item {
-      display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 1;
+      display: flex; flex-direction: column; align-items: center; gap: 6px;
+      width: 148px; flex-shrink: 0;
     }
     #saveCard .sc-buddy-tag {
       font-size: 12px; font-weight: 700;
@@ -448,7 +450,7 @@
     #saveCard .sc-buddy-tag.good { background: #e8faf0; color: #16a34a; }
     #saveCard .sc-buddy-tag.bad  { background: #fff1f2; color: #dc2626; }
     #saveCard .sc-buddy-img {
-      width: 128px; height: 128px;
+      width: 140px; height: 140px;
       border-radius: 20px; object-fit: cover;
       border: 2px solid #e2e8f0;
     }
