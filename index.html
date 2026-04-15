@@ -360,6 +360,71 @@
       line-height: 1.7; font-style: italic;
       white-space: pre-line;
     }
+
+    /* ── 인스타 스토리 저장 전용 카드 (화면에 안 보임) ── */
+    #saveCard {
+      position: fixed;
+      left: -9999px;
+      top: 0;
+      width: 540px;
+      height: 960px;
+      background: linear-gradient(160deg, #edfbfc 0%, #c8f3f7 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 48px 40px 40px;
+      gap: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', sans-serif;
+    }
+    #saveCard .sc-logo {
+      width: 80px;
+      margin-bottom: 24px;
+    }
+    #saveCard .sc-img-wrap {
+      width: 200px;
+      height: 200px;
+      border-radius: 28px;
+      overflow: hidden;
+      background: #d6f4f7;
+      box-shadow: 0 8px 32px rgba(42,163,178,.22);
+      margin-bottom: 24px;
+      flex-shrink: 0;
+    }
+    #saveCard .sc-img-wrap img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+    }
+    #saveCard .sc-type {
+      font-size: 16px; font-weight: 600; color: #555;
+      margin-bottom: 8px;
+    }
+    #saveCard .sc-title {
+      font-family: 'Do Hyeon', sans-serif;
+      font-size: 34px; color: #2aa3b2;
+      text-align: center; line-height: 1.3;
+      margin-bottom: 18px;
+    }
+    #saveCard .sc-chips {
+      display: flex; flex-wrap: wrap; gap: 8px;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    #saveCard .sc-chip {
+      background: rgba(42,163,178,.15); color: #1e8c9a;
+      border-radius: 20px; padding: 7px 16px;
+      font-size: 15px; font-weight: 600;
+    }
+    #saveCard .sc-quote {
+      font-size: 15px; color: #444;
+      line-height: 1.75; font-style: italic;
+      text-align: center; white-space: pre-line;
+      margin-bottom: 28px;
+    }
+    #saveCard .sc-footer {
+      font-size: 13px; color: #2aa3b2;
+      font-weight: 600; letter-spacing: 0.5px;
+    }
+
     .info-card {
       background: #fff;
       border-radius: 22px;
@@ -705,6 +770,17 @@
     </div>
   </div>
 
+  <!-- ══════ 인스타 저장 전용 카드 ══════ -->
+  <div id="saveCard">
+    <img class="sc-logo" src="images/dig-logo.png" alt="DIG">
+    <div class="sc-img-wrap"><img id="scImg" src="" alt=""></div>
+    <div class="sc-type">당신의 유형은...</div>
+    <div class="sc-title" id="scTitle"></div>
+    <div class="sc-chips" id="scChips"></div>
+    <div class="sc-quote" id="scQuote"></div>
+    <div class="sc-footer">dig-economy.co.kr</div>
+  </div>
+
   <!-- ══════ LOADING ══════ -->
   <!-- ══════ RESULT ══════ -->
   <div id="screenResult" class="screen result-screen">
@@ -1042,6 +1118,12 @@ function renderResult(type) {
   document.getElementById('rTitle').textContent   = r.title;
   document.getElementById('rQuote').textContent   = r.quote;
   document.getElementById('rChips').innerHTML     = r.tags.map(t => `<span class="result-chip">${t}</span>`).join('');
+
+  // 인스타 저장 카드 동기화
+  document.getElementById('scImg').src    = `images/${type.toLowerCase()}.png`;
+  document.getElementById('scTitle').textContent = r.title;
+  document.getElementById('scQuote').textContent = r.quote;
+  document.getElementById('scChips').innerHTML   = r.tags.map(t => `<span class="sc-chip">${t}</span>`).join('');
   document.getElementById('rConsume').textContent = r.consume;
   document.getElementById('rInvest').textContent  = r.invest;
   document.getElementById('rStock').innerHTML     = `<div class="stock-name">${r.stockName}</div><p>${r.stockDesc}</p>`;
@@ -1215,12 +1297,14 @@ function copyLink(btn) {
 function saveImage() {
   if (!currentType) return;
   trackEvent('image_save');
-  const target = document.querySelector('#screenResult .result-hero');
+  const target = document.getElementById('saveCard');
   html2canvas(target, {
     useCORS: true,
-    backgroundColor: '#edfbfc',
+    backgroundColor: null,
     scale: 2,
-    scrollY: 0,
+    scrollY: -window.scrollY,
+    width: 540,
+    height: 960,
   }).then(canvas => {
     const a = document.createElement('a');
     a.download = `경제MBTI_${currentType}.png`;
