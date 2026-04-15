@@ -1044,6 +1044,7 @@ function render() {
 
 function pick(v, btnEl) {
   const content = document.getElementById('qContent');
+  content.style.height = content.offsetHeight + 'px'; // 높이 고정 (레이아웃 리플로우 방지)
   content.querySelectorAll('.opt-btn').forEach(b => b.disabled = true);
 
   // 선택한 버튼 flash 효과
@@ -1057,11 +1058,17 @@ function pick(v, btnEl) {
       answers.push(v);
       cur++;
       if (cur >= Q.length) {
+        content.style.height = '';
         showResult();
       } else {
+        content.style.height = ''; // 높이 해제 후 render
         render();
-        content.style.animation = 'qFadeIn 0.6s ease forwards';
-        setTimeout(() => { content.style.animation = ''; }, 600);
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => { // 버튼 높이 균등화 완료 후 fade-in
+            content.style.animation = 'qFadeIn 0.6s ease forwards';
+            setTimeout(() => { content.style.animation = ''; }, 600);
+          });
+        });
       }
     }, 400);
   }, 100);
