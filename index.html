@@ -369,36 +369,36 @@
       top: 0;
       width: 540px;
       height: 960px;
-      background: linear-gradient(160deg, #edfbfc 0%, #c8f3f7 100%);
+      background: #ffffff;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 32px 32px;
+      padding: 40px 44px;
       font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', sans-serif;
     }
     #saveCard .sc-inner {
-      background: #fff;
-      border-radius: 36px;
-      padding: 28px 32px 28px;
+      background: transparent;
+      border-radius: 0;
+      padding: 0;
       display: flex;
       flex-direction: column;
       align-items: center;
       width: 100%;
-      box-shadow: 0 8px 40px rgba(42,163,178,.14);
+      box-shadow: none;
     }
     #saveCard .sc-logo {
       width: 72px;
-      margin-bottom: 18px;
+      margin-bottom: 16px;
       flex-shrink: 0;
     }
     #saveCard .sc-img-wrap {
-      width: 200px;
-      height: 200px;
-      border-radius: 24px;
+      width: 240px;
+      height: 240px;
+      border-radius: 28px;
       overflow: hidden;
       background: #d6f4f7;
-      box-shadow: 0 6px 20px rgba(42,163,178,.20);
+      box-shadow: 0 6px 24px rgba(42,163,178,.18);
       margin-bottom: 16px;
       flex-shrink: 0;
     }
@@ -413,12 +413,12 @@
       font-family: 'Do Hyeon', sans-serif;
       font-size: 32px; color: #2aa3b2;
       text-align: center; line-height: 1.3;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
     #saveCard .sc-chips {
       display: flex; flex-wrap: wrap; gap: 6px;
       justify-content: center;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
     #saveCard .sc-chip {
       background: #d6f4f7; color: #1e8c9a;
@@ -429,14 +429,14 @@
       font-size: 14px; color: #555;
       line-height: 1.7; font-style: italic;
       text-align: center; white-space: pre-line;
-      margin-bottom: 18px;
+      margin-bottom: 16px;
     }
     #saveCard .sc-divider {
       width: 100%; height: 1px;
-      background: #edfbfc; margin-bottom: 16px;
+      background: #e2e8f0; margin-bottom: 14px;
     }
     #saveCard .sc-buddy-row {
-      display: flex; gap: 20px; justify-content: center; width: 100%;
+      display: flex; gap: 10px; justify-content: center; width: 100%;
     }
     #saveCard .sc-buddy-item {
       display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 1;
@@ -448,12 +448,17 @@
     #saveCard .sc-buddy-tag.good { background: #e8faf0; color: #16a34a; }
     #saveCard .sc-buddy-tag.bad  { background: #fff1f2; color: #dc2626; }
     #saveCard .sc-buddy-img {
-      width: 80px; height: 80px;
-      border-radius: 14px; object-fit: cover;
-      border: 2px solid #edfbfc;
+      width: 110px; height: 110px;
+      border-radius: 18px; object-fit: cover;
+      border: 2px solid #e2e8f0;
     }
     #saveCard .sc-buddy-mbti {
       font-size: 15px; font-weight: 900; color: #1e8c9a;
+    }
+    #saveCard .sc-buddy-desc {
+      font-size: 12px; color: #666;
+      text-align: center; line-height: 1.4;
+      word-break: keep-all;
     }
 
     .info-card {
@@ -816,11 +821,13 @@
           <span class="sc-buddy-tag good">환상의 짝꿍</span>
           <img class="sc-buddy-img" id="scGoodImg" src="" alt="">
           <span class="sc-buddy-mbti" id="scGoodMbti"></span>
+          <span class="sc-buddy-desc" id="scGoodDesc"></span>
         </div>
         <div class="sc-buddy-item">
           <span class="sc-buddy-tag bad">환장의 짝꿍</span>
           <img class="sc-buddy-img" id="scBadImg" src="" alt="">
           <span class="sc-buddy-mbti" id="scBadMbti"></span>
+          <span class="sc-buddy-desc" id="scBadDesc"></span>
         </div>
       </div>
     </div>
@@ -1200,8 +1207,10 @@ function renderResult(type) {
   // 저장 카드 짝꿍
   document.getElementById('scGoodImg').src  = `images/${goodKey}.png`;
   document.getElementById('scGoodMbti').textContent = r.good;
+  document.getElementById('scGoodDesc').textContent = goodData.title || '';
   document.getElementById('scBadImg').src   = `images/${badKey}.png`;
   document.getElementById('scBadMbti').textContent  = r.bad;
+  document.getElementById('scBadDesc').textContent  = badData.title || '';
 
   document.getElementById('copyToast').textContent = '';
 
