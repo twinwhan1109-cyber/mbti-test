@@ -10,8 +10,8 @@
   <meta property="og:title"       content="나의 경제 MBTI는? 💰">
   <meta property="og:description" content="13개 질문으로 알아보는 나만의 소비·투자 유형 테스트!">
   <meta property="og:image"       content="https://mbti-test-9zb.pages.dev/images/cover.png">
-  <meta property="og:image:width"  content="1200">
-  <meta property="og:image:height" content="630">
+  <meta property="og:image:width"  content="1080">
+  <meta property="og:image:height" content="720">
   <meta property="og:url"         content="https://mbti-test-9zb.pages.dev">
 
   <!-- Twitter Card -->
@@ -1042,7 +1042,7 @@ function shareTwitterStart() {
   window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank');
 }
 function copyStartLink(btn) {
-  trackEvent('share_image');
+  trackEvent('share_link');
   const url = getStartUrl();
   navigator.clipboard.writeText(url)
     .then(() => {
@@ -1142,7 +1142,7 @@ function copyLink(btn) {
 // 이미지 저장 (결과 카드 캡처)
 function saveImage() {
   if (!currentType) return;
-  trackEvent('share_image');
+  trackEvent('image_save');
   const target = document.querySelector('#screenResult .result-hero');
   html2canvas(target, {
     useCORS: true,

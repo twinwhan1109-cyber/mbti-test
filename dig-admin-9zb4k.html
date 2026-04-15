@@ -323,9 +323,15 @@
       <div class="metric-unit">회</div>
     </div>
     <div class="metric-card">
+      <div class="metric-icon">🔗</div>
+      <div class="metric-label">링크 공유</div>
+      <div class="metric-value" id="mLinkShares">—</div>
+      <div class="metric-unit">회</div>
+    </div>
+    <div class="metric-card">
       <div class="metric-icon">🖼️</div>
-      <div class="metric-label">이미지/링크 공유</div>
-      <div class="metric-value" id="mImageShares">—</div>
+      <div class="metric-label">이미지 저장</div>
+      <div class="metric-value" id="mImageSaves">—</div>
       <div class="metric-unit">회</div>
     </div>
   </div>
@@ -377,7 +383,8 @@ async function loadData() {
     set('mKakaoShares',    fmt(d.kakao_shares));
     set('mFacebookShares', fmt(d.facebook_shares));
     set('mTwitterShares',  fmt(d.twitter_shares));
-    set('mImageShares',    fmt(d.image_shares));
+    set('mLinkShares',     fmt(d.link_shares));
+    set('mImageSaves',     fmt(d.image_saves));
 
     // MBTI 바 차트
     renderMbti(d.by_mbti || []);

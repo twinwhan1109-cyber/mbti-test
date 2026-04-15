@@ -76,8 +76,10 @@ export async function onRequestGet(context) {
     const { kakao_shares }    = await env.DB.prepare("SELECT COUNT(*) AS kakao_shares    FROM events WHERE event_type = 'share_kakao'").first();
     const { facebook_shares } = await env.DB.prepare("SELECT COUNT(*) AS facebook_shares FROM events WHERE event_type = 'share_facebook'").first();
     const { twitter_shares }  = await env.DB.prepare("SELECT COUNT(*) AS twitter_shares  FROM events WHERE event_type = 'share_twitter'").first();
-    const { image_shares }    = await env.DB.prepare("SELECT COUNT(*) AS image_shares    FROM events WHERE event_type = 'share_image'").first();
-    const total_shares = (kakao_shares || 0) + (facebook_shares || 0) + (twitter_shares || 0) + (image_shares || 0);
+    const { link_shares }     = await env.DB.prepare("SELECT COUNT(*) AS link_shares     FROM events WHERE event_type = 'share_link'").first();
+    const { image_saves }     = await env.DB.prepare("SELECT COUNT(*) AS image_saves     FROM events WHERE event_type = 'image_save'").first();
+    // 총 공유수: 이미지 저장(다운로드)은 제외, 링크 복사는 포함
+    const total_shares = (kakao_shares || 0) + (facebook_shares || 0) + (twitter_shares || 0) + (link_shares || 0);
 
     // 10. MBTI 유형별 분포
     const { results: by_mbti } = await env.DB
@@ -125,7 +127,8 @@ export async function onRequestGet(context) {
       kakao_shares,
       facebook_shares,
       twitter_shares,
-      image_shares,
+      link_shares,
+      image_saves,
       total_shares,
       by_mbti,
       daily_last_30: daily,
