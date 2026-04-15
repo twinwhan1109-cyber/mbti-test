@@ -18,6 +18,21 @@ export async function onRequestPost(context) {
   }
 
   try {
+    // 1. 기존 백업 데이터 제거
+    await env.DB.prepare('DELETE FROM events_backup').run();
+    await env.DB.prepare('DELETE FROM results_backup').run();
+
+    // 2. 현재 데이터를 백업 테이블에 복사
+    await env.DB.prepare(`
+      INSERT INTO events_backup (event_type, session_id, duration_ms, question_num, ip_address, created_at)
+      SELECT event_type, session_id, duration_ms, question_num, ip_address, created_at FROM events
+    `).run();
+    await env.DB.prepare(`
+      INSERT INTO results_backup (result_mbti, source_page, user_agent, created_at)
+      SELECT result_mbti, source_page, user_agent, created_at FROM results
+    `).run();
+
+    // 3. 원본 데이터 삭제
     await env.DB.prepare('DELETE FROM events').run();
     await env.DB.prepare('DELETE FROM results').run();
 
