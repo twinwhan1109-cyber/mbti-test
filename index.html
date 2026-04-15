@@ -393,12 +393,11 @@
     .bad-tag  { background: #fff1f2; color: #dc2626; }
     .buddy-profile { display: flex; flex-direction: column; align-items: center; gap: 8px; }
     .buddy-img {
-      width: 72px; height: 72px;
+      width: 88px; height: 88px;
       border-radius: 14px; object-fit: cover;
       border: 2px solid #edfbfc;
     }
     .buddy-info { display: flex; flex-direction: column; align-items: center; gap: 2px; }
-    .buddy-mbti { font-size: 15px; font-weight: 900; color: #1e8c9a; }
     .buddy-title { font-size: 12px; color: #555; text-align: center; }
 
     .stock-name {
@@ -722,8 +721,8 @@
       <div class="info-body" id="rStock"></div>
     </div>
     <div class="info-card">
-      <div class="info-title">📊 통계로 보는 나의 부자 잠재력</div>
-      <div class="info-body" id="rPotential"></div>
+      <div class="info-title">📊 성격으로 보는 나의 부자 잠재력</div>
+      <div class="info-body"><div class="stock-name" id="rPotentialType"></div><p id="rPotential"></p></div>
     </div>
     <div class="info-card">
       <div class="buddy-wrap">
@@ -732,7 +731,6 @@
           <div class="buddy-profile">
             <img class="buddy-img" id="rGoodImg" src="" alt="">
             <div class="buddy-info">
-              <span class="buddy-mbti" id="rGoodType"></span>
               <span class="buddy-title" id="rGoodTitle"></span>
             </div>
           </div>
@@ -742,7 +740,6 @@
           <div class="buddy-profile">
             <img class="buddy-img" id="rBadImg" src="" alt="">
             <div class="buddy-info">
-              <span class="buddy-mbti" id="rBadType"></span>
               <span class="buddy-title" id="rBadTitle"></span>
             </div>
           </div>
@@ -1034,6 +1031,7 @@ function renderResult(type) {
   document.getElementById('rConsume').textContent = r.consume;
   document.getElementById('rInvest').textContent  = r.invest;
   document.getElementById('rStock').innerHTML     = `<div class="stock-name">${r.stockName}</div><p>${r.stockDesc}</p>`;
+  document.getElementById('rPotentialType').textContent = type;
   document.getElementById('rPotential').textContent = r.potential;
 
   // 짝꿍 궁합
@@ -1043,11 +1041,9 @@ function renderResult(type) {
   const badData  = RESULTS[r.bad]  || {};
   document.getElementById('rGoodImg').src   = `images/${goodKey}.png`;
   document.getElementById('rGoodImg').alt   = r.good;
-  document.getElementById('rGoodType').textContent  = r.good;
   document.getElementById('rGoodTitle').textContent = goodData.emoji + ' ' + goodData.title;
   document.getElementById('rBadImg').src    = `images/${badKey}.png`;
   document.getElementById('rBadImg').alt    = r.bad;
-  document.getElementById('rBadType').textContent   = r.bad;
   document.getElementById('rBadTitle').textContent  = badData.emoji + ' ' + badData.title;
 
   document.getElementById('copyToast').textContent = '';
