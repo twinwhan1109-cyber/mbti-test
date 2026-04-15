@@ -10,6 +10,11 @@ export async function onRequestGet(context) {
       .prepare("SELECT COUNT(*) AS starts FROM events WHERE event_type = 'quiz_start'")
       .first();
 
+    // 1-1. 총 참여자 수 (중복 포함, 앞페이지 카운터와 동일)
+    const { total_participants } = await env.DB
+      .prepare("SELECT COUNT(*) AS total_participants FROM results")
+      .first();
+
     // 2. 고유 참여자 수 (IP 기준, 없으면 session_id fallback)
     const { unique_participants } = await env.DB
       .prepare(`
@@ -115,6 +120,7 @@ export async function onRequestGet(context) {
     }));
 
     return json({
+      total_participants,
       unique_participants,
       quiz_starts: starts,
       quiz_completes: completes,
