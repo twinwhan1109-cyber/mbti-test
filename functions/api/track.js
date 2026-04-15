@@ -44,6 +44,7 @@ export async function onRequestPost(context) {
 
     return json({ success: true });
   } catch (e) {
+    console.error('[track] DB error:', e.message, { event_type, session_id });
     return json({ error: 'DB 저장 중 오류가 발생했습니다.' }, 500);
   }
 }

@@ -40,6 +40,7 @@ export async function onRequestPost(context) {
 
     return json({ success: true });
   } catch (e) {
+    console.error('[save-result] DB error:', e.message, { result_mbti });
     return json({ error: 'DB 저장 중 오류가 발생했습니다.' }, 500);
   }
 }
