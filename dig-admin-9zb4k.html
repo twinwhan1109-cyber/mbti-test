@@ -40,6 +40,15 @@
       transition: background 0.2s;
     }
     .reset-btn:hover { background: rgba(239,68,68,0.45); }
+    .undo-header-btn {
+      background: rgba(42,163,178,0.15);
+      border: 1.5px solid rgba(42,163,178,0.5); color: #fff;
+      padding: 8px 16px; border-radius: 10px;
+      font-size: 13px; font-weight: 600; cursor: pointer;
+      transition: background 0.2s;
+    }
+    .undo-header-btn:hover { background: rgba(42,163,178,0.35); }
+    .undo-header-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
     /* 리셋 모달 */
     .modal-overlay {
@@ -218,6 +227,7 @@
   </div>
   <div class="header-btns">
     <button class="refresh-btn" onclick="loadData()">↻ 새로고침</button>
+    <button class="undo-header-btn" id="undoHeaderBtn" onclick="doUndo()">↩ 되돌리기</button>
     <button class="reset-btn" onclick="openReset()">🗑 데이터 초기화</button>
   </div>
 </div>
@@ -495,10 +505,14 @@ async function doReset() {
   }
 }
 async function doUndo() {
-  const undoBtn = document.getElementById('undoBtn');
+  const headerBtn = document.getElementById('undoHeaderBtn');
+  const modalBtn  = document.getElementById('undoBtn');
   const msg = document.getElementById('resetResult');
-  undoBtn.disabled = true;
-  undoBtn.textContent = '복원 중...';
+
+  headerBtn.disabled = true;
+  headerBtn.textContent = '복원 중...';
+  if (modalBtn) { modalBtn.disabled = true; modalBtn.textContent = '복원 중...'; }
+
   try {
     const res = await fetch('/api/undo-reset', {
       method: 'POST',
@@ -507,20 +521,19 @@ async function doUndo() {
     });
     const d = await res.json();
     if (d.success) {
-      msg.style.color = '#16a34a';
-      msg.textContent = `✅ 복원 완료! (${d.restored}건 이벤트 복원)`;
-      undoBtn.style.display = 'none';
+      alert(`✅ 복원 완료! 이벤트 ${d.restored}건이 복원됐어요.`);
+      if (modalBtn) modalBtn.style.display = 'none';
+      closeReset();
       loadData();
     } else {
-      msg.style.color = '#ef4444';
-      msg.textContent = '복원 오류: ' + (d.error || '알 수 없는 오류');
+      alert('복원 실패: ' + (d.error || '백업 데이터가 없습니다.'));
     }
   } catch (e) {
-    msg.style.color = '#ef4444';
-    msg.textContent = '복원 오류: ' + e.message;
+    alert('복원 오류: ' + e.message);
   } finally {
-    undoBtn.disabled = false;
-    undoBtn.textContent = '↩ 되돌리기 (초기화 취소)';
+    headerBtn.disabled = false;
+    headerBtn.textContent = '↩ 되돌리기';
+    if (modalBtn) { modalBtn.disabled = false; modalBtn.textContent = '↩ 되돌리기 (초기화 취소)'; }
   }
 }
 </script>
