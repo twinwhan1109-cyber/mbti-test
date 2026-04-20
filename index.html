@@ -1259,7 +1259,9 @@ function shareKakaoStart() {
 function shareFacebookStart() {
   trackEvent('share_facebook');
   const url = getStartUrl();
-  window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank');
+  const fbUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+  const w = window.open(fbUrl, '_blank');
+  if (!w) location.href = fbUrl;
 }
 function shareTwitterStart() {
   trackEvent('share_twitter');
@@ -1333,7 +1335,9 @@ function shareFacebook() {
   if (!currentType) return;
   trackEvent('share_facebook');
   const url = getShareUrl();
-  window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank');
+  const fbUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+  const w = window.open(fbUrl, '_blank');
+  if (!w) location.href = fbUrl;
 }
 
 // X(트위터) 공유
