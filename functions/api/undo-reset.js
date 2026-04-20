@@ -1,10 +1,9 @@
 // POST /api/undo-reset
 // 가장 최근 초기화 직전 데이터를 백업 테이블에서 복원 (관리자 전용)
 
-const RESET_SECRET = 'dig-reset-9zb4k-2024';
-
 export async function onRequestPost(context) {
   const { request, env } = context;
+  const RESET_SECRET = env.RESET_SECRET;
 
   let body;
   try {

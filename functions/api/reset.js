@@ -1,10 +1,9 @@
 // POST /api/reset
 // 모든 이벤트 및 결과 데이터 초기화 (관리자 전용)
 
-const RESET_SECRET = 'dig-reset-9zb4k-2024';
-
 export async function onRequestPost(context) {
   const { request, env } = context;
+  const RESET_SECRET = env.RESET_SECRET;
 
   let body;
   try {

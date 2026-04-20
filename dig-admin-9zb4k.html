@@ -259,6 +259,7 @@
   <div class="modal-box">
     <h3>⚠️ 데이터 초기화</h3>
     <p>events · results 테이블의 <strong>모든 데이터</strong>가 삭제됩니다.<br>초기화 직후 <strong>되돌리기</strong>가 가능합니다.</p>
+    <input type="password" id="resetSecretInput" placeholder="관리자 비밀번호" style="width:100%;padding:10px 12px;margin:12px 0 4px;border:1.5px solid #e5e7eb;border-radius:10px;font-size:14px;outline:none;">
     <div class="modal-btns">
       <button class="modal-cancel" onclick="closeReset()">취소</button>
       <button class="modal-confirm" onclick="doReset()">초기화</button>
@@ -519,6 +520,7 @@ loadData();
 
 function openReset() {
   document.getElementById('resetResult').textContent = '';
+  document.getElementById('resetSecretInput').value = '';
   document.getElementById('undoBtn').style.display = 'none';
   document.getElementById('resetModal').classList.add('open');
 }
@@ -529,6 +531,8 @@ async function doReset() {
   const btn = document.querySelector('.modal-confirm');
   const msg = document.getElementById('resetResult');
   const undoBtn = document.getElementById('undoBtn');
+  const secret = document.getElementById('resetSecretInput').value;
+  if (!secret) { msg.style.color = '#ef4444'; msg.textContent = '비밀번호를 입력하세요.'; return; }
   btn.disabled = true;
   btn.textContent = '초기화 중...';
   undoBtn.style.display = 'none';
@@ -536,7 +540,7 @@ async function doReset() {
     const res = await fetch('/api/reset', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ secret: 'dig-reset-9zb4k-2024' }),
+      body: JSON.stringify({ secret }),
     });
     const d = await res.json();
     if (d.success) {
@@ -569,7 +573,7 @@ async function doUndo() {
     const res = await fetch('/api/undo-reset', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ secret: 'dig-reset-9zb4k-2024' }),
+      body: JSON.stringify({ secret: document.getElementById('resetSecretInput').value }),
     });
     const d = await res.json();
     if (d.success) {
