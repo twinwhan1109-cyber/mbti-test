@@ -991,9 +991,10 @@ window.addEventListener('DOMContentLoaded', () => {
     Kakao.init(KAKAO_APP_KEY);
   }
 
-  // URL 파라미터로 결과 직접 표시
-  const params = new URLSearchParams(window.location.search);
-  const mbti = (params.get('mbti') || '').toUpperCase();
+  // URL로 결과 직접 표시 (해시 우선, 쿼리 파라미터 폴백)
+  const hashMbti = window.location.hash.replace('#', '').toUpperCase();
+  const paramMbti = new URLSearchParams(window.location.search).get('mbti') || '';
+  const mbti = (hashMbti || paramMbti).toUpperCase();
   if (/^[A-Z]{4}$/.test(mbti) && RESULTS[mbti]) {
     renderResult(mbti);
   }
@@ -1172,7 +1173,7 @@ function renderResult(type) {
   currentType = type;
 
   // URL 업데이트 (새로고침 없이)
-  history.replaceState(null, '', `?mbti=${type}`);
+  history.replaceState(null, '', `#${type}`);
 
   document.getElementById('rEmoji').textContent   = r.emoji;
   document.getElementById('rImg').src             = `images/${type.toLowerCase()}.png`;
@@ -1231,7 +1232,7 @@ function restartQuiz() {
 // ── 공유 함수 ────────────────────────────────────────
 
 function getShareUrl() {
-  return `${window.location.origin}${window.location.pathname}?mbti=${currentType}`;
+  return `${window.location.origin}${window.location.pathname}#${currentType}`;
 }
 
 function getStartUrl() {
