@@ -859,7 +859,7 @@
       <div class="info-body" id="rInvest"></div>
     </div>
     <div class="info-card">
-      <div class="info-title">💵 나와 잘 맞는 추천 주식</div>
+      <div class="info-title">💵 내 스타일에 어울리는 주식</div>
       <div class="info-body" id="rStock"></div>
     </div>
     <div class="info-card">
@@ -1312,11 +1312,11 @@ function shareKakao() {
     },
     buttons: [
       {
-        title: '내 결과 보기',
+        title: '결과 보기',
         link: { mobileWebUrl: url, webUrl: url },
       },
       {
-        title: '나도 테스트하기',
+        title: '테스트하기',
         link: {
           mobileWebUrl: window.location.origin + window.location.pathname,
           webUrl: window.location.origin + window.location.pathname,
@@ -1370,7 +1370,7 @@ function saveImage() {
   const target = document.getElementById('saveCard');
   html2canvas(target, {
     useCORS: true,
-    backgroundColor: null,
+    backgroundColor: '#edfbfc',
     scale: 2,
     scrollY: -window.scrollY,
     width: 540,
