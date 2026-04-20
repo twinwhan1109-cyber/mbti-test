@@ -1304,7 +1304,7 @@ function shareKakao() {
   Kakao.Share.sendDefault({
     objectType: 'feed',
     content: {
-      title: `나의 경제 MBTI는 ${currentType} · ${r.title}`,
+      title: `${r.title}`,
       description: r.quote.replace(/^"|"$/g, ''),
       imageUrl: imageUrl,
       imageWidth: 400,
