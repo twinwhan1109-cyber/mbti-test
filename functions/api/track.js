@@ -5,7 +5,7 @@ const VALID_EVENTS = [
   'quiz_start', 'quiz_complete',
   'newsletter_click', 'insta_click',
   'quiz_abandon',
-  'share_kakao', 'share_facebook', 'share_twitter', 'share_image',
+  'share_kakao', 'share_facebook', 'share_twitter', 'share_image', 'image_save',
 ];
 
 export async function onRequestPost(context) {
