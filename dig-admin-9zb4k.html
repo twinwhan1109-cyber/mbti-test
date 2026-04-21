@@ -308,6 +308,12 @@
       <div class="metric-unit">회</div>
     </div>
     <div class="metric-card">
+      <div class="metric-icon">📚</div>
+      <div class="metric-label">지난 콘텐츠 클릭</div>
+      <div class="metric-value" id="mArchive">—</div>
+      <div class="metric-unit">회</div>
+    </div>
+    <div class="metric-card">
       <div class="metric-icon">📸</div>
       <div class="metric-label">인스타 클릭</div>
       <div class="metric-value" id="mInsta">—</div>
@@ -404,6 +410,7 @@ async function loadData() {
     set('mRate',          d.completion_rate     != null ? d.completion_rate     : '—');
     set('mSession',       d.avg_session_sec     != null ? d.avg_session_sec     : '—');
     set('mNewsletter',    fmt(d.newsletter_clicks));
+    set('mArchive',       fmt(d.archive_clicks));
     set('mInsta',         fmt(d.insta_clicks));
     set('mNewsletterConv', d.newsletter_conversion != null ? d.newsletter_conversion : '—');
     set('mInstaConv',      d.insta_conversion      != null ? d.insta_conversion      : '—');

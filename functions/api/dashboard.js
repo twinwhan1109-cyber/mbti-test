@@ -83,6 +83,7 @@ export async function onRequestGet(context) {
     const { twitter_shares }  = await env.DB.prepare("SELECT COUNT(*) AS twitter_shares  FROM events WHERE event_type = 'share_twitter'").first();
     const { link_shares }     = await env.DB.prepare("SELECT COUNT(*) AS link_shares     FROM events WHERE event_type = 'share_link'").first();
     const { image_saves }     = await env.DB.prepare("SELECT COUNT(*) AS image_saves     FROM events WHERE event_type = 'image_save'").first();
+    const { archive_clicks }  = await env.DB.prepare("SELECT COUNT(*) AS archive_clicks  FROM events WHERE event_type = 'archive_click'").first();
     // 총 공유수: 이미지 저장(다운로드)은 제외, 링크 복사는 포함
     const total_shares = (kakao_shares || 0) + (facebook_shares || 0) + (twitter_shares || 0) + (link_shares || 0);
 
@@ -127,6 +128,7 @@ export async function onRequestGet(context) {
       completion_rate,
       avg_session_sec,
       newsletter_clicks,
+      archive_clicks,
       insta_clicks,
       newsletter_conversion,
       insta_conversion,
