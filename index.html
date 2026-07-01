@@ -1012,7 +1012,7 @@ window.addEventListener('DOMContentLoaded', () => {
     .then(data => {
       if (data && data.total !== undefined) {
         document.getElementById('participantNum').textContent =
-          Number(data.total + 500).toLocaleString('ko-KR');
+          Number(data.total + 20500).toLocaleString('ko-KR');
       }
     })
     .catch(() => {
